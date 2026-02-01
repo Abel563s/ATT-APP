@@ -1,0 +1,23 @@
+{
+    "$schema": "https://www.schemastore.org/package.json",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "build": "vite build",
+        "dev": "vite",
+        "dev:full": "concurrently \"php artisan serve --host=127.0.0.1 --port=8001\" \"npm run dev\" --names=\"laravel,vite\"",
+        "dev:laravel": "php artisan serve --host=127.0.0.1 --port=8000"
+    },
+    "devDependencies": {
+        "@tailwindcss/forms": "^0.5.9",
+        "@tailwindcss/vite": "^4.1.18",
+        "alpinejs": "^3.14.0",
+        "autoprefixer": "^10.4.20",
+        "axios": "^1.7.9",
+        "concurrently": "^9.1.2",
+        "laravel-vite-plugin": "^1.1.0",
+        "postcss": "^8.4.49",
+        "tailwindcss": "^4.1.18",
+        "vite": "^5.4.21"
+    }
+}
