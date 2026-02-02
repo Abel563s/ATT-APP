@@ -40,7 +40,8 @@
 
             // History - Accessible by All
             if (Auth::check()) {
-                $menu[] = ['label' => 'History', 'icon' => 'clock', 'route' => 'attendance.history', 'active' => request()->routeIs('attendance.history')];
+                $route = Auth::user()->isAdmin() ? 'admin.attendance.history' : 'attendance.history';
+                $menu[] = ['label' => 'History', 'icon' => 'clock', 'route' => $route, 'active' => request()->routeIs($route)];
             }
 
             // Reports - Admin only

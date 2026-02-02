@@ -22,14 +22,19 @@ class Employee extends Model
         'date_of_birth',
         'date_of_joining',
         'position',
+        'site',
         'salary',
         'employment_type',
         'is_active',
+        'status',
+        'termination_reason',
+        'termination_date',
     ];
 
     protected $casts = [
         'date_of_birth' => 'date',
         'date_of_joining' => 'date',
+        'termination_date' => 'date',
         'salary' => 'decimal:2',
         'is_active' => 'boolean',
     ];
@@ -65,7 +70,23 @@ class Employee extends Model
      */
     public function scopeActive($query)
     {
-        return $query->where('is_active', true);
+        return $query->where('status', 'active');
+    }
+
+    /**
+     * Scope to get terminated employees.
+     */
+    public function scopeTerminated($query)
+    {
+        return $query->where('status', 'terminated');
+    }
+
+    /**
+     * Scope to get inactive employees.
+     */
+    public function scopeInactive($query)
+    {
+        return $query->where('status', 'inactive');
     }
 
     /**

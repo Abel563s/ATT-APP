@@ -100,7 +100,7 @@
                                         };
                                     @endphp
                                     <span class="px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest ring-1 ring-inset {{ $roleColor }}">
-                                        {{ $user->role }}
+                                        {{ ucfirst($user->role) }}
                                     </span>
                                 </td>
                                 <td class="px-8 py-5 text-right">

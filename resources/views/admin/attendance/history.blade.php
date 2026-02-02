@@ -46,11 +46,25 @@
                     <input type="date" name="from_date" value="{{ request('from_date') }}"
                         class="w-full px-4 py-2 bg-slate-50 border-none rounded-xl text-sm font-bold focus:ring-2 focus:ring-[#00ADC5]/20">
                 </div>
-                <div class="flex items-end">
+                <div class="flex items-end gap-3">
                     <button type="submit"
-                        class="w-full px-6 py-2 bg-[#00ADC5] rounded-xl text-sm font-black text-white hover:bg-[#007A8A] transition-all">
+                        class="flex-1 px-6 py-2 bg-[#00ADC5] rounded-xl text-sm font-black text-white hover:bg-[#007A8A] transition-all shadow-lg shadow-cyan-100">
                         Apply Filters
                     </button>
+                    <div class="flex gap-2">
+                        <a href="{{ route('admin.attendance.history.export', request()->all()) }}"
+                            class="px-5 py-2 bg-emerald-500 rounded-xl text-xs font-black text-white hover:bg-emerald-600 transition-all flex items-center justify-center gap-2 shadow-lg shadow-emerald-100"
+                            title="Export Excel">
+                            <i data-lucide="file-spreadsheet" class="w-4 h-4"></i>
+                            Excel
+                        </a>
+                        <a href="{{ route('admin.attendance.history.export.pdf', request()->all()) }}"
+                            class="px-5 py-2 bg-rose-500 rounded-xl text-xs font-black text-white hover:bg-rose-600 transition-all flex items-center justify-center gap-2 shadow-lg shadow-rose-100"
+                            title="Export PDF">
+                            <i data-lucide="file-text" class="w-4 h-4"></i>
+                            PDF
+                        </a>
+                    </div>
                 </div>
             </form>
         </div>

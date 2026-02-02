@@ -80,7 +80,8 @@ class AttendanceController extends Controller
         // Check if the current user is restricted from editing (Manager but not Admin)
         $isManagerReadOnly = ($user->isManager() && !$user->isAdmin());
 
-        $employees = Employee::where('department_id', $department->id)
+        $employees = Employee::active()
+            ->where('department_id', $department->id)
             ->whereHas('user', function ($q) {
                 $q->whereNotIn('role', ['admin', 'manager']);
             })

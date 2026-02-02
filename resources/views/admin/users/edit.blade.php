@@ -46,12 +46,10 @@
                                     Protocol (Role)</label>
                                 <select name="role" required
                                     class="w-full rounded-2xl border-none bg-slate-50 p-4 font-bold text-slate-700 focus:ring-4 focus:ring-[#00ADC5]/10 transition-all text-sm appearance-none cursor-pointer">
-                                    <option value="user" {{ $user->role === 'user' ? 'selected' : '' }}>Standard Division
-                                        Terminal</option>
-                                    <option value="manager" {{ $user->role === 'manager' ? 'selected' : '' }}>Management
-                                        Node</option>
-                                    <option value="admin" {{ $user->role === 'admin' ? 'selected' : '' }}>Authority
-                                        Overlord (Admin)</option>
+                                    <option value="user" {{ $user->role === 'user' ? 'selected' : '' }}>User</option>
+                                    <option value="manager" {{ $user->role === 'manager' ? 'selected' : '' }}>Manager
+                                    </option>
+                                    <option value="admin" {{ $user->role === 'admin' ? 'selected' : '' }}>Admin</option>
                                 </select>
                                 <x-input-error :messages="$errors->get('role')" />
                             </div>

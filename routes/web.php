@@ -53,6 +53,9 @@ Route::middleware(['auth'])->group(function () {
     Route::middleware(['role:admin'])->prefix('admin')->name('admin.')->group(function () {
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
         Route::get('/reports', [AdminDashboardController::class, 'report'])->name('reports');
+        Route::get('/attendance/history', [AdminDashboardController::class, 'history'])->name('attendance.history');
+        Route::get('/attendance/history/export', [AdminDashboardController::class, 'exportHistory'])->name('attendance.history.export');
+        Route::get('/attendance/history/export/pdf', [AdminDashboardController::class, 'exportHistoryPdf'])->name('attendance.history.export.pdf');
         Route::delete('/attendance/{attendance}', [AdminDashboardController::class, 'destroyAttendance'])->name('attendance.destroy');
 
         // System Settings & Core Identifiers
@@ -61,6 +64,10 @@ Route::middleware(['auth'])->group(function () {
         Route::put('/settings/codes/{code}', [App\Http\Controllers\Admin\SystemSettingController::class, 'updateCode'])->name('settings.update-code');
 
         Route::post('/employees/{employee}/activate', [AdminEmployeeController::class, 'activate'])->name('employees.activate');
+        Route::post('/employees/{employee}/terminate', [AdminEmployeeController::class, 'terminate'])->name('employees.terminate');
+        Route::get('/employees/export/pdf', [AdminEmployeeController::class, 'exportPdf'])->name('employees.export.pdf');
+        Route::post('/employees/import/preview', [AdminEmployeeController::class, 'importPreview'])->name('employees.import.preview');
+        Route::post('/employees/import/process', [AdminEmployeeController::class, 'importProcess'])->name('employees.import.process');
         Route::resource('employees', AdminEmployeeController::class);
         Route::resource('departments', AdminDepartmentController::class);
         Route::resource('users', AdminUserController::class);

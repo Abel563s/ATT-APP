@@ -83,10 +83,28 @@
                                 <option value="">Select Division</option>
                                 @foreach($departments as $dept)
                                     <option value="{{ $dept->id }}" {{ old('department_id') == $dept->id ? 'selected' : '' }}>
-                                        {{ $dept->name }}</option>
+                                        {{ $dept->name }}
+                                    </option>
                                 @endforeach
                             </select>
                             <x-input-error :messages="$errors->get('department_id')" />
+                        </div>
+                        <div class="space-y-2">
+                            <label
+                                class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Operating
+                                Site</label>
+                            <input type="text" name="site" value="{{ old('site') }}"
+                                class="w-full rounded-2xl border-none bg-slate-50 p-4 font-bold text-slate-700 focus:ring-4 focus:ring-[#00ADC5]/10 text-sm"
+                                placeholder="e.g. Headquarters, Factory A">
+                            <x-input-error :messages="$errors->get('site')" />
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Position
+                                / Title</label>
+                            <input type="text" name="position" value="{{ old('position') }}"
+                                class="w-full rounded-2xl border-none bg-slate-50 p-4 font-bold text-slate-700 focus:ring-4 focus:ring-[#00ADC5]/10 text-sm"
+                                placeholder="e.g. Senior Analyst">
+                            <x-input-error :messages="$errors->get('position')" />
                         </div>
                         <div class="space-y-2">
                             <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">System
@@ -95,8 +113,6 @@
                                 class="w-full rounded-2xl bg-slate-100 p-4 font-black text-slate-400 text-sm italic select-none">
                                 AUTO-GENERATED (EEC-XXXXX)
                             </div>
-                            <p class="text-[9px] font-bold text-slate-400 mt-1 uppercase">A unique EEC identifier will
-                                be assigned upon execution</p>
                         </div>
                     </div>
                 </div>
@@ -121,12 +137,9 @@
                                 Role</label>
                             <select name="role" required
                                 class="w-full rounded-2xl border-none bg-slate-50 p-4 font-bold text-slate-700 focus:ring-4 focus:ring-[#00ADC5]/10 text-sm appearance-none cursor-pointer">
-                                <option value="user" {{ old('role') == 'user' ? 'selected' : '' }}>Standard Asset (User)
-                                </option>
-                                <option value="manager" {{ old('role') == 'manager' ? 'selected' : '' }}>Division Manager
-                                </option>
-                                <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>Authority Overlord
-                                </option>
+                                <option value="user" {{ old('role') == 'user' ? 'selected' : '' }}>User</option>
+                                <option value="manager" {{ old('role') == 'manager' ? 'selected' : '' }}>Manager</option>
+                                <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>Admin</option>
                                 <option value="department_attendance_user" {{ old('role') == 'department_attendance_user' ? 'selected' : '' }}>Division Attendance Terminal</option>
                             </select>
                             <x-input-error :messages="$errors->get('role')" />

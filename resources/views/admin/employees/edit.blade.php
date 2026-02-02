@@ -96,13 +96,27 @@
                         </div>
                         <div class="space-y-2">
                             <label
+                                class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Operating
+                                Site</label>
+                            <input type="text" name="site" value="{{ old('site', $employee->site) }}"
+                                class="w-full rounded-2xl border-none bg-slate-50 p-4 font-bold text-slate-700 focus:ring-4 focus:ring-[#00ADC5]/10 text-sm">
+                            <x-input-error :messages="$errors->get('site')" />
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Position
+                                / Title</label>
+                            <input type="text" name="position" value="{{ old('position', $employee->position) }}"
+                                class="w-full rounded-2xl border-none bg-slate-50 p-4 font-bold text-slate-700 focus:ring-4 focus:ring-[#00ADC5]/10 text-sm">
+                            <x-input-error :messages="$errors->get('position')" />
+                        </div>
+                        <div class="space-y-2">
+                            <label
                                 class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1 text-slate-300">System
                                 Node ID (Locked)</label>
                             <div
                                 class="w-full rounded-2xl bg-slate-50 p-4 font-black text-slate-400 text-sm tracking-widest select-none cursor-not-allowed">
                                 {{ $employee->employee_id }}
                             </div>
-                            <p class="text-[9px] font-bold text-slate-300 mt-1 uppercase">Immutable EEC identifier</p>
                         </div>
                     </div>
                 </div>
@@ -128,9 +142,9 @@
                             <select name="role" required
                                 class="w-full rounded-2xl border-none bg-slate-50 p-4 font-bold text-slate-700 focus:ring-4 focus:ring-[#00ADC5]/10 text-sm appearance-none cursor-pointer">
                                 <option value="user" {{ old('role', $employee->user->role) == 'user' ? 'selected' : '' }}>
-                                    Standard Asset (User)</option>
-                                <option value="manager" {{ old('role', $employee->user->role) == 'manager' ? 'selected' : '' }}>Division Manager</option>
-                                <option value="admin" {{ old('role', $employee->user->role) == 'admin' ? 'selected' : '' }}>Authority Overlord</option>
+                                    User</option>
+                                <option value="manager" {{ old('role', $employee->user->role) == 'manager' ? 'selected' : '' }}>Manager</option>
+                                <option value="admin" {{ old('role', $employee->user->role) == 'admin' ? 'selected' : '' }}>Admin</option>
                                 <option value="department_attendance_user" {{ old('role', $employee->user->role) == 'department_attendance_user' ? 'selected' : '' }}>Division
                                     Attendance Terminal</option>
                             </select>
@@ -139,14 +153,13 @@
                         <div class="space-y-2">
                             <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Protocol
                                 Status</label>
-                            <select name="is_active" required
-                                class="w-full rounded-2xl border-none bg-slate-50 p-4 font-bold {{ $employee->is_active ? 'text-emerald-600' : 'text-rose-600' }} focus:ring-4 focus:ring-[#00ADC5]/10 text-sm appearance-none cursor-pointer">
-                                <option value="1" {{ old('is_active', $employee->is_active) ? 'selected' : '' }}>🟢
-                                    Operational (Active)</option>
-                                <option value="0" {{ old('is_active', $employee->is_active) ? '' : 'selected' }}>🔴
-                                    Decommissioned (Inactive)</option>
+                            <select name="status" required
+                                class="w-full rounded-2xl border-none bg-slate-50 p-4 font-bold text-slate-700 focus:ring-4 focus:ring-[#00ADC5]/10 text-sm appearance-none cursor-pointer">
+                                <option value="active" {{ old('status', $employee->status) == 'active' ? 'selected' : '' }}>🟢 Operational (Active)</option>
+                                <option value="inactive" {{ old('status', $employee->status) == 'inactive' ? 'selected' : '' }}>🟡 Decommissioned (Inactive)</option>
+                                <option value="terminated" {{ old('status', $employee->status) == 'terminated' ? 'selected' : '' }}>🔴 Termination Protocol</option>
                             </select>
-                            <x-input-error :messages="$errors->get('is_active')" />
+                            <x-input-error :messages="$errors->get('status')" />
                         </div>
                     </div>
                 </div>

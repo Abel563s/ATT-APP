@@ -11,6 +11,10 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
+use App\Exports\AttendanceHistoryExport;
+use Maatwebsite\Excel\Facades\Excel;
+use Barryvdh\DomPDF\Facade\Pdf;
+
 class DashboardController extends Controller
 {
     /**
@@ -19,7 +23,7 @@ class DashboardController extends Controller
     public function index(Request $request)
     {
         $pendingApprovals = \App\Models\WeeklyAttendance::where('status', \App\Enums\AttendanceStatus::PENDING)->count();
-        $totalEmployees = \App\Models\Employee::count();
+        $totalEmployees = \App\Models\Employee::active()->count();
         $totalDepartments = \App\Models\Department::active()->count();
 
         $recentRecords = \App\Models\WeeklyAttendance::with(['department', 'submitter'])
@@ -52,7 +56,9 @@ class DashboardController extends Controller
         $codes = \App\Models\AttendanceCode::all();
         $codesMap = $codes->keyBy('code');
 
-        $summary = [];
+        $totalApprovedAttendance = 0;
+        $presentCount = 0;
+
         foreach ($codes as $code) {
             $summary[$code->code] = [
                 'label' => $code->label,
@@ -92,12 +98,15 @@ class DashboardController extends Controller
                         if ($val === 'P') {
                             $departmentStats[$deptName]['present']++;
                             $trendData[$weekKey]['present']++;
+                            $presentCount++;
                         }
+                        $totalApprovedAttendance++;
                     }
                 }
             }
         }
 
+        $avgAttendance = $totalApprovedAttendance > 0 ? ($presentCount / $totalApprovedAttendance) * 100 : 0;
         // Calculate percentages
         foreach ($departmentStats as $name => &$stats) {
             $stats['percentage'] = $stats['total'] > 0 ? round(($stats['present'] / $stats['total']) * 100, 1) : 0;
@@ -109,17 +118,29 @@ class DashboardController extends Controller
 
         $trendData = array_values(collect($trendData)->sortBy('week')->toArray());
 
+        // Extra Intelligence for report
+        $intelligence = [
+            'active_workers' => \App\Models\Employee::active()->count(),
+            'total_workers' => \App\Models\Employee::count(),
+            'compliance_rate' => \App\Models\WeeklyAttendance::count() > 0
+                ? round((\App\Models\WeeklyAttendance::where('status', \App\Enums\AttendanceStatus::APPROVED)->count() / \App\Models\WeeklyAttendance::count()) * 100, 1)
+                : 100,
+            'avg_presence' => round($avgAttendance, 1),
+            'total_nodes_scanned' => collect($departmentStats)->sum('total')
+        ];
+
         return view('admin.reports.attendance', [
             'summary' => $summary,
             'departmentStats' => $departmentStats,
             'trendData' => $trendData,
-            'codes' => $codes
+            'codes' => $codes,
+            'intelligence' => $intelligence
         ]);
     }
 
-    public function history(Request $request)
+    protected function getHistoryQuery(Request $request)
     {
-        $query = \App\Models\WeeklyAttendance::with(['department', 'submitter'])
+        $query = \App\Models\WeeklyAttendance::with(['department', 'submitter', 'approver'])
             ->where('status', '!=', \App\Enums\AttendanceStatus::DRAFT);
 
         // Apply filters
@@ -142,10 +163,54 @@ class DashboardController extends Controller
             $query->where('week_start_date', '>=', $request->from_date);
         }
 
-        $records = $query->latest('updated_at')->paginate(20);
+        return $query->latest('updated_at');
+    }
+
+    public function history(Request $request)
+    {
+        $records = $this->getHistoryQuery($request)->paginate(20);
         $departments = \App\Models\Department::active()->orderBy('name')->get();
 
         return view('admin.attendance.history', compact('records', 'departments'));
+    }
+
+    public function exportHistory(Request $request)
+    {
+        $weeklyRecords = $this->getHistoryQuery($request)->with(['entries.employee', 'department'])->get();
+        $entries = collect();
+
+        foreach ($weeklyRecords as $record) {
+            foreach ($record->entries as $entry) {
+                // Attach relevant parent data for the export
+                $entry->week_start_date = $record->week_start_date;
+                $entry->department_name = $record->department->name ?? 'Unassigned';
+                $entry->weekly_status = ucfirst($record->status->value);
+                $entries->push($entry);
+            }
+        }
+
+        return Excel::download(new AttendanceHistoryExport($entries), 'Attendance_Detailed_History_' . now()->format('YmdHis') . '.xlsx');
+    }
+
+    public function exportHistoryPdf(Request $request)
+    {
+        $weeklyRecords = $this->getHistoryQuery($request)->with(['entries.employee', 'department'])->get();
+        $entries = collect();
+
+        foreach ($weeklyRecords as $record) {
+            foreach ($record->entries as $entry) {
+                $entry->week_start_date = $record->week_start_date;
+                $entry->department_name = $record->department->name ?? 'Unassigned';
+                $entry->weekly_status = ucfirst($record->status->value);
+                $entries->push($entry);
+            }
+        }
+
+        $date = now()->format('d M Y');
+        $pdf = Pdf::loadView('admin.attendance.export_pdf', compact('entries', 'date'))
+            ->setPaper('a4', 'landscape');
+
+        return $pdf->download('Attendance_History_' . now()->format('YmdHis') . '.pdf');
     }
 
     /**

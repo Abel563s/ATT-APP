@@ -72,20 +72,21 @@
             <div
                 class="bg-gradient-to-br from-emerald-400 to-teal-500 rounded-[2.5rem] p-8 text-white relative overflow-hidden shadow-xl">
                 <div class="relative z-10">
-                    <span class="text-[10px] font-black text-white/60 uppercase tracking-widest block mb-2">Network
-                        Health</span>
-                    <h3 class="text-2xl font-black tracking-tight mb-1">{{ round($avgAttendance, 1) }}%</h3>
-                    <p class="text-sm font-medium text-white/80">Average system-wide presence</p>
+                    <span class="text-[10px] font-black text-white/60 uppercase tracking-widest block mb-2">Workforce
+                        Sync</span>
+                    <h3 class="text-2xl font-black tracking-tight mb-1">{{ $intelligence['active_workers'] }} /
+                        {{ $intelligence['total_workers'] }}</h3>
+                    <p class="text-sm font-medium text-white/80">Active Personnel Operational</p>
                 </div>
                 <div class="absolute -right-8 -bottom-8 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
             </div>
             <div
                 class="bg-gradient-to-br from-slate-800 to-slate-900 rounded-[2.5rem] p-8 text-white relative overflow-hidden shadow-xl">
                 <div class="relative z-10">
-                    <span class="text-[10px] font-black text-white/60 uppercase tracking-widest block mb-2">Data
-                        Integrity</span>
-                    <h3 class="text-2xl font-black tracking-tight mb-1">100%</h3>
-                    <p class="text-sm font-medium text-white/80">All nodes verified and synced</p>
+                    <span class="text-[10px] font-black text-white/60 uppercase tracking-widest block mb-2">Compliance
+                        Index</span>
+                    <h3 class="text-2xl font-black tracking-tight mb-1">{{ $intelligence['compliance_rate'] }}%</h3>
+                    <p class="text-sm font-medium text-white/80">Approval Authorization Rate</p>
                 </div>
                 <div class="absolute -right-8 -bottom-8 w-32 h-32 bg-cyan-500/20 rounded-full blur-2xl"></div>
             </div>
@@ -225,11 +226,13 @@
                             <span class="text-sm font-black text-slate-700">All Approved History</span>
                         </div>
                         <div class="p-5 bg-slate-50 rounded-2xl border border-slate-100">
-                            <span class="text-[9px] font-black text-slate-400 uppercase block mb-1">Data
-                                Confidence</span>
+                            <span class="text-[9px] font-black text-slate-400 uppercase block mb-1">Authorization
+                                Data</span>
                             <div class="flex items-center gap-2 mt-1">
                                 <div class="w-2 h-2 rounded-full bg-emerald-500"></div>
-                                <span class="text-xs font-black text-slate-700">High Integrity (100%)</span>
+                                <span
+                                    class="text-xs font-black text-slate-700">{{ $intelligence['total_nodes_scanned'] }}
+                                    Sync Points Verified</span>
                             </div>
                         </div>
                     </div>

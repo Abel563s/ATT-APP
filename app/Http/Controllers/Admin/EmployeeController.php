@@ -11,6 +11,11 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 
+use Maatwebsite\Excel\Facades\Excel;
+use App\Imports\EmployeeImport;
+use App\Exports\EmployeeExport;
+use Barryvdh\DomPDF\Facade\Pdf;
+
 class EmployeeController extends Controller
 {
     /**
@@ -25,9 +30,12 @@ class EmployeeController extends Controller
             $query->where('department_id', $request->department_id);
         }
 
-        // Filter by status
-        if ($request->filled('is_active')) {
-            $query->where('is_active', $request->boolean('is_active'));
+        // Filter by status (new field)
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        } elseif ($request->filled('is_active')) {
+            // Fallback for old toggle if still used
+            $query->where('status', $request->boolean('is_active') ? 'active' : 'inactive');
         }
 
         // Search by name or employee ID
@@ -41,15 +49,25 @@ class EmployeeController extends Controller
             });
         }
 
-        Log::info('Employee Index Request', $request->all());
-        Log::info('Employee Query SQL', [$query->toSql(), $query->getBindings()]);
-        Log::info('Employee Query Count', [$query->count()]);
+        // Clone query for stats before pagination
+        $statsQuery = clone $query;
+        $totalFound = $statsQuery->count();
+        $activeCount = (clone $statsQuery)->where('status', 'active')->count();
+        $inactiveCount = (clone $statsQuery)->where('status', 'inactive')->count();
+        $terminatedCount = (clone $statsQuery)->where('status', 'terminated')->count();
 
         $employees = $query->orderBy('created_at', 'desc')->paginate(20);
 
         $departments = Department::active()->get();
 
-        return view('admin.employees.index', compact('employees', 'departments'));
+        return view('admin.employees.index', compact(
+            'employees',
+            'departments',
+            'totalFound',
+            'activeCount',
+            'inactiveCount',
+            'terminatedCount'
+        ));
     }
 
     /**
@@ -73,6 +91,8 @@ class EmployeeController extends Controller
             'department_id' => 'required|exists:departments,id',
             'role' => 'required|in:admin,manager,user,department_attendance_user',
             'password' => 'required|string|min:8|confirmed',
+            'site' => 'nullable|string|max:255',
+            'position' => 'nullable|string|max:255',
         ]);
 
         DB::beginTransaction();
@@ -95,7 +115,7 @@ class EmployeeController extends Controller
                 'role' => $request->role,
                 'department_id' => $request->department_id,
                 'employee_id' => $generatedId,
-                'is_active' => false,
+                'is_active' => true,
             ]);
 
             // Create employee record
@@ -106,15 +126,22 @@ class EmployeeController extends Controller
                 'first_name' => $request->first_name,
                 'last_name' => $request->last_name,
                 'email' => $request->email,
+                'site' => $request->site,
+                'position' => $request->position,
                 'date_of_joining' => now(),
-                'is_active' => false,
+                'status' => 'active',
+                'is_active' => true,
             ]);
 
             DB::commit();
 
             // Notify Admins
             $admins = User::where('role', 'admin')->get();
-            \Illuminate\Support\Facades\Notification::send($admins, new \App\Notifications\NewEmployeeCreated($employee));
+            try {
+                \Illuminate\Support\Facades\Notification::send($admins, new \App\Notifications\NewEmployeeCreated($employee));
+            } catch (\Exception $e) {
+                Log::warning('Could not send notification: ' . $e->getMessage());
+            }
 
             return redirect()->route('admin.employees.index')
                 ->with('success', 'Employee created successfully.');
@@ -125,7 +152,7 @@ class EmployeeController extends Controller
 
             return redirect()->back()
                 ->withInput()
-                ->with('error', 'Failed to create employee. Please try again.');
+                ->with('error', 'Failed to create employee: ' . $e->getMessage());
         }
     }
 
@@ -159,7 +186,9 @@ class EmployeeController extends Controller
             'email' => 'required|email|unique:employees,email,' . $employee->id . '|unique:users,email,' . $employee->user_id,
             'department_id' => 'required|exists:departments,id',
             'role' => 'required|in:admin,manager,user,department_attendance_user',
-            'is_active' => 'boolean',
+            'status' => 'required|in:active,inactive,terminated',
+            'site' => 'nullable|string|max:255',
+            'position' => 'nullable|string|max:255',
         ]);
 
         DB::beginTransaction();
@@ -170,7 +199,7 @@ class EmployeeController extends Controller
                 'email' => $request->email,
                 'role' => $request->role,
                 'department_id' => $request->department_id,
-                'is_active' => $request->boolean('is_active', true),
+                'is_active' => $request->status === 'active',
             ]);
 
             // Update employee record
@@ -179,7 +208,10 @@ class EmployeeController extends Controller
                 'first_name' => $request->first_name,
                 'last_name' => $request->last_name,
                 'email' => $request->email,
-                'is_active' => $request->boolean('is_active', true),
+                'site' => $request->site,
+                'position' => $request->position,
+                'status' => $request->status,
+                'is_active' => $request->status === 'active',
             ]);
 
             DB::commit();
@@ -193,7 +225,38 @@ class EmployeeController extends Controller
 
             return redirect()->back()
                 ->withInput()
-                ->with('error', 'Failed to update employee. Please try again.');
+                ->with('error', 'Failed to update employee: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Handle termination.
+     */
+    public function terminate(Request $request, Employee $employee)
+    {
+        $request->validate([
+            'termination_reason' => 'required|string',
+            'termination_date' => 'required|date',
+        ]);
+
+        try {
+            DB::beginTransaction();
+
+            $employee->update([
+                'status' => 'terminated',
+                'is_active' => false,
+                'termination_reason' => $request->termination_reason,
+                'termination_date' => $request->termination_date,
+            ]);
+
+            $employee->user->update(['is_active' => false]);
+
+            DB::commit();
+
+            return redirect()->back()->with('success', 'Employee terminated successfully.');
+        } catch (\Exception $e) {
+            DB::rollback();
+            return redirect()->back()->with('error', 'Failed to terminate employee.');
         }
     }
 
@@ -203,8 +266,8 @@ class EmployeeController extends Controller
     public function destroy(Employee $employee)
     {
         try {
-            // Soft delete or deactivate instead of hard delete
-            $employee->update(['is_active' => false]);
+            // Logical decommissioning instead of hard delete
+            $employee->update(['status' => 'inactive', 'is_active' => false]);
             $employee->user->update(['is_active' => false]);
 
             return redirect()->route('admin.employees.index')
@@ -214,7 +277,7 @@ class EmployeeController extends Controller
             Log::error('Employee deactivation failed: ' . $e->getMessage());
 
             return redirect()->back()
-                ->with('error', 'Failed to deactivate employee. Please try again.');
+                ->with('error', 'Failed to deactivate employee.');
         }
     }
 
@@ -224,7 +287,7 @@ class EmployeeController extends Controller
     public function activate(Employee $employee)
     {
         try {
-            $employee->update(['is_active' => true]);
+            $employee->update(['status' => 'active', 'is_active' => true]);
             $employee->user->update(['is_active' => true]);
 
             return redirect()->back()
@@ -234,7 +297,104 @@ class EmployeeController extends Controller
             Log::error('Employee activation failed: ' . $e->getMessage());
 
             return redirect()->back()
-                ->with('error', 'Failed to activate employee. Please try again.');
+                ->with('error', 'Failed to activate employee.');
         }
+    }
+
+    /**
+     * Import employees preview.
+     */
+    public function importPreview(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls,csv'
+        ]);
+
+        try {
+            $data = Excel::toCollection(new EmployeeImport, $request->file('file'))->first();
+
+            // Validate row-level (basic)
+            $rows = $data->map(function ($row) {
+                $errors = [];
+                if (empty($row['first_name']))
+                    $errors[] = "Missing First Name";
+                if (empty($row['last_name']))
+                    $errors[] = "Missing Last Name";
+                if (empty($row['email']))
+                    $errors[] = "Missing Email";
+                if (empty($row['employee_id']))
+                    $errors[] = "Missing Employee ID";
+                if (empty($row['department']))
+                    $errors[] = "Missing Department";
+
+                // Check if exists
+                if (!empty($row['employee_id']) && Employee::where('employee_id', $row['employee_id'])->exists()) {
+                    $errors[] = "Employee ID already exists";
+                }
+
+                $row['errors'] = $errors;
+                $row['is_valid'] = count($errors) === 0;
+                return $row;
+            });
+
+            // Store file temporarily for actual import
+            $path = $request->file('file')->store('temp');
+
+            return view('admin.employees.import_preview', compact('rows', 'path'));
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Failed to read file: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Process import.
+     */
+    public function importProcess(Request $request)
+    {
+        $request->validate(['path' => 'required']);
+
+        try {
+            Excel::import(new EmployeeImport, storage_path('app/private/' . $request->path));
+            return redirect()->route('admin.employees.index')->with('success', 'Employees imported successfully.');
+        } catch (\Exception $e) {
+            return redirect()->route('admin.employees.index')->with('error', 'Import failed: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Export employees to PDF.
+     */
+    public function exportPdf(Request $request)
+    {
+        $query = Employee::with(['user', 'department']);
+
+        // Handle selected employees
+        if ($request->filled('selected_ids')) {
+            $ids = explode(',', $request->selected_ids);
+            $query->whereIn('id', $ids);
+        } else {
+            // Apply current filters if any
+            if ($request->filled('department_id')) {
+                $query->where('department_id', $request->department_id);
+            }
+            if ($request->filled('status')) {
+                $query->where('status', $request->status);
+            }
+            if ($request->filled('search')) {
+                $search = $request->search;
+                $query->where(function ($q) use ($search) {
+                    $q->where('first_name', 'like', "%{$search}%")
+                        ->orWhere('last_name', 'like', "%{$search}%")
+                        ->orWhere('employee_id', 'like', "%{$search}%");
+                });
+            }
+        }
+
+        $employees = $query->get();
+        $date = now()->format('d M Y');
+
+        $pdf = Pdf::loadView('admin.employees.export_pdf', compact('employees', 'date'));
+
+        return $pdf->download('Employee_Registry_' . now()->format('YmdHis') . '.pdf');
     }
 }
