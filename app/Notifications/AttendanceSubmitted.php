@@ -35,13 +35,12 @@ class AttendanceSubmitted extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->subject('New Attendance Protocol Submitted')
-            ->greeting('Hello, Manager')
-            ->line('A new attendance protocol has been submitted for ' . $this->attendance->department->name . '.')
-            ->line('Week Starting: ' . $this->attendance->week_start_date->format('M d, Y'))
-            ->line('Submitted by: ' . $this->attendance->submitter->name)
-            ->action('Review Details', route('manager.approvals.show', $this->attendance))
-            ->line('Please review and proceed with the necessary authorization.');
+            ->subject('Attendance Submission Awaiting Approval')
+            ->greeting('Dear ' . ($notifiable->name ?? 'Approver') . ',')
+            ->line('An attendance record has been submitted and is awaiting your review and approval. Please log in to the attendance system at the link below to verify the details and take the necessary action:')
+            ->action('View Attendance System', 'https://attendance.eecproducts.com/')
+            ->line('Kindly complete the approval at your earliest convenience to ensure timely processing.')
+            ->line('Thank you.');
     }
 
     /**

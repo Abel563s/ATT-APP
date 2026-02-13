@@ -14,8 +14,7 @@ class HistoryController extends Controller
     {
         $user = Auth::user();
 
-        $query = WeeklyAttendance::with(['department', 'submitter'])
-            ->where('status', '!=', AttendanceStatus::DRAFT);
+        $query = WeeklyAttendance::with(['department', 'submitter']);
 
         // Security: Managers and regular users see restricted data
         if (!$user->isAdmin()) {
@@ -44,6 +43,7 @@ class HistoryController extends Controller
 
         if ($request->filled('status')) {
             $statusMap = [
+                'draft' => AttendanceStatus::DRAFT,
                 'pending' => AttendanceStatus::PENDING,
                 'approved' => AttendanceStatus::APPROVED,
                 'rejected' => AttendanceStatus::REJECTED,

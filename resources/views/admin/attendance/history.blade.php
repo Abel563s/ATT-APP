@@ -35,6 +35,7 @@
                     <select name="status"
                         class="w-full px-4 py-2 bg-slate-50 border-none rounded-xl text-sm font-bold focus:ring-2 focus:ring-[#00ADC5]/20">
                         <option value="">All Statuses</option>
+                        <option value="draft" {{ request('status') == 'draft' ? 'selected' : '' }}>Draft</option>
                         <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
                         <option value="approved" {{ request('status') == 'approved' ? 'selected' : '' }}>Approved</option>
                         <option value="rejected" {{ request('status') == 'rejected' ? 'selected' : '' }}>Rejected</option>
@@ -59,7 +60,7 @@
                             Excel
                         </a>
                         <a href="{{ route('admin.attendance.history.export.pdf', request()->all()) }}"
-                            class="px-5 py-2 bg-rose-500 rounded-xl text-xs font-black text-white hover:bg-rose-600 transition-all flex items-center justify-center gap-2 shadow-lg shadow-rose-100"
+                            class="px-5 py-2 bg-rose-500 rounded-xl text-xs font-black text-white hover:bg-rose-600 transition-all flex items-center justify-center gap-2 shadow-lg shadow-rose-100 border border-rose-600/10"
                             title="Export PDF">
                             <i data-lucide="file-text" class="w-4 h-4"></i>
                             PDF
@@ -132,7 +133,7 @@
                                 </td>
                                 <td class="px-8 py-5 text-right">
                                     <div class="flex items-center justify-end gap-2">
-                                        <a href="{{ route('manager.approvals.show', $record->id) }}"
+                                        <a href="{{ route('attendance.show', $record->id) }}"
                                             class="inline-flex items-center px-4 py-2 bg-slate-50 rounded-xl text-[10px] font-black text-slate-400 uppercase hover:bg-[#00ADC5] hover:text-white transition-all">
                                             View Details →
                                         </a>

@@ -7,7 +7,7 @@
                 <p class="text-slate-500 font-medium">Manage human assets and division assignments.</p>
             </div>
             <div class="flex items-center gap-3">
-                <button onclick="document.getElementById('importModal').showModal()"
+                <button onclick="openImportModal()"
                     class="px-5 py-3.5 bg-white border border-slate-200 rounded-2xl text-[10px] font-black text-slate-600 uppercase tracking-widest hover:bg-slate-50 transition-all active:scale-95 flex items-center gap-2 shadow-sm">
                     <i data-lucide="upload" class="w-4 h-4"></i>
                     Import
@@ -255,115 +255,151 @@
 
             @if($employees->hasPages())
                 <div class="px-8 py-6 border-t border-slate-100 bg-slate-50/50">
-                    {{ $employees->links() }}
+                    {{ $employees->appends(request()->except('page'))->links() }}
                 </div>
             @endif
         </div>
     </div>
 
-    <!-- Import Modal -->
-    <dialog id="importModal"
-        class="modal p-0 rounded-[2.5rem] shadow-2xl border-none bg-transparent backdrop:bg-slate-900/50">
-        <div class="bg-white w-[30rem] rounded-[2.5rem] overflow-hidden">
-            <div class="p-8 space-y-6">
-                <div class="flex items-center justify-between">
-                    <h3 class="text-xl font-black text-slate-900 uppercase tracking-tight">Import Employees</h3>
-                    <button onclick="document.getElementById('importModal').close()"
-                        class="p-2 text-slate-400 hover:text-slate-600 transition-colors">
-                        <i data-lucide="x" class="w-6 h-6"></i>
-                    </button>
-                </div>
+    <!-- Import Modal (Centered Div) -->
+    <div id="importModal" class="fixed inset-0 z-[100] hidden overflow-y-auto" aria-labelledby="modal-title"
+        role="dialog" aria-modal="true">
+        <div class="flex items-center justify-center min-h-screen p-4 text-center sm:p-0">
+            <!-- Background overlay -->
+            <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-md transition-opacity" onclick="closeImportModal()"
+                aria-hidden="true"></div>
 
-                <form action="{{ route('admin.employees.import.preview') }}" method="POST" enctype="multipart/form-data"
-                    class="space-y-6">
-                    @csrf
-                    <div class="space-y-4">
-                        <div
-                            class="border-2 border-dashed border-slate-200 rounded-3xl p-10 text-center hover:border-[#00ADC5] transition-colors group cursor-pointer relative">
-                            <input type="file" name="file" class="absolute inset-0 opacity-0 cursor-pointer" required
-                                onchange="this.nextElementSibling.innerHTML = this.files[0].name">
-                            <div class="space-y-3 pointer-events-none">
-                                <i data-lucide="file-up"
-                                    class="w-10 h-10 mx-auto text-slate-300 group-hover:text-[#00ADC5] transition-colors"></i>
-                                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Click or drag
-                                    Excel/CSV file here</p>
+            <!-- Modal panel -->
+            <div
+                class="relative inline-block align-middle bg-white rounded-[2.5rem] text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-xl sm:w-full border border-white/20">
+                <div class="p-10">
+                    <div class="flex items-center justify-between mb-8">
+                        <div class="w-16 h-16 rounded-2xl bg-cyan-50 text-[#00ADC5] flex items-center justify-center">
+                            <i data-lucide="upload-cloud" class="w-8 h-8"></i>
+                        </div>
+                        <button onclick="closeImportModal()"
+                            class="p-2 text-slate-400 hover:text-slate-600 transition-colors">
+                            <i data-lucide="x" class="w-6 h-6"></i>
+                        </button>
+                    </div>
+
+                    <h3 class="text-3xl font-black text-slate-900 tracking-tight mb-2">Import Personnel</h3>
+                    <p class="text-slate-500 font-medium mb-8">Synchronize the staff registry using a structured data
+                        file.</p>
+
+                    <form action="{{ route('admin.employees.import.preview') }}" method="POST"
+                        enctype="multipart/form-data" class="space-y-6">
+                        @csrf
+                        <div class="space-y-4">
+                            <div
+                                class="border-2 border-dashed border-slate-100 rounded-3xl p-12 text-center hover:border-[#00ADC5] transition-all group cursor-pointer relative bg-slate-50/50">
+                                <input type="file" name="file" class="absolute inset-0 opacity-0 cursor-pointer"
+                                    required
+                                    onchange="this.nextElementSibling.querySelector('.file-name').innerHTML = this.files[0].name">
+                                <div class="space-y-3 pointer-events-none text-center flex flex-col items-center">
+                                    <i data-lucide="file-spread-sheet"
+                                        class="w-10 h-10 text-slate-300 group-hover:text-[#00ADC5] transition-colors"></i>
+                                    <p
+                                        class="text-[10px] font-black text-slate-400 uppercase tracking-widest file-name">
+                                        Drop Excel or CSV File</p>
+                                </div>
+                            </div>
+                            <div
+                                class="bg-[#00ADC5]/5 p-5 rounded-2xl flex items-start gap-3 border border-[#00ADC5]/10">
+                                <i data-lucide="info" class="w-5 h-5 text-[#00ADC5] mt-0.5"></i>
+                                <p
+                                    class="text-[10px] font-bold text-[#00ADC5] leading-relaxed uppercase tracking-tight">
+                                    Required Format: first_name, last_name, email, employee_id, department, position,
+                                    role, site.
+                                </p>
                             </div>
                         </div>
-                        <div class="bg-blue-50 p-4 rounded-2xl flex items-start gap-3">
-                            <i data-lucide="info" class="w-5 h-5 text-blue-500 mt-0.5"></i>
-                            <p class="text-[10px] font-bold text-blue-700 leading-relaxed uppercase tracking-tight">
-                                File must contain: first_name, last_name, email, employee_id, department, position,
-                                role, site.
-                            </p>
-                        </div>
-                    </div>
 
-                    <button type="submit"
-                        class="w-full py-4 bg-[#00ADC5] rounded-2xl text-[10px] font-black text-white uppercase tracking-widest shadow-lg shadow-cyan-100 hover:bg-[#007A8A] transition-all active:scale-95">
-                        Preview Import Data
-                    </button>
-                </form>
+                        <button type="submit"
+                            class="w-full py-5 bg-[#00ADC5] rounded-2xl text-[10px] font-black text-white uppercase tracking-widest shadow-xl shadow-cyan-100 hover:bg-[#007A8A] transition-all active:scale-[0.98]">Analyze
+                            Data Structure</button>
+                    </form>
+                </div>
             </div>
         </div>
-    </dialog>
+    </div>
 
-    <!-- Termination Modal -->
-    <dialog id="terminateModal"
-        class="modal p-0 rounded-[2.5rem] shadow-2xl border-none bg-transparent backdrop:bg-slate-900/50">
-        <div class="bg-white w-[30rem] rounded-[2.5rem] overflow-hidden">
-            <div class="p-8 space-y-6">
-                <div class="flex items-center justify-between">
-                    <h3 class="text-xl font-black text-slate-900 uppercase tracking-tight text-rose-600">Terminate
-                        Protocol</h3>
-                    <button onclick="document.getElementById('terminateModal').close()"
-                        class="p-2 text-slate-400 hover:text-slate-600 transition-colors">
-                        <i data-lucide="x" class="w-6 h-6"></i>
-                    </button>
-                </div>
+    <!-- Termination Modal (Centered Div) -->
+    <div id="terminateModal" class="fixed inset-0 z-[100] hidden overflow-y-auto" aria-labelledby="modal-title"
+        role="dialog" aria-modal="true">
+        <div class="flex items-center justify-center min-h-screen p-4 text-center sm:p-0">
+            <!-- Background overlay -->
+            <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-md transition-opacity"
+                onclick="closeTerminateModal()" aria-hidden="true"></div>
 
-                <div class="bg-rose-50 p-4 rounded-2xl border border-rose-100">
-                    <p class="text-[10px] font-black text-rose-600 uppercase tracking-tight">System Warning</p>
-                    <p class="text-sm font-bold text-rose-700">Deactivating: <span id="terminateEmployeeName"
-                            class="underline"></span></p>
-                </div>
-
-                <form id="terminateForm" method="POST" class="space-y-6">
-                    @csrf
-                    <div class="space-y-4">
-                        <div class="space-y-2">
-                            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Reason
-                                for Termination</label>
-                            <select name="termination_reason" required
-                                class="w-full py-3.5 px-4 bg-slate-50 border-none rounded-2xl text-sm font-bold text-slate-700 focus:ring-4 focus:ring-rose-500/10">
-                                <option value="Resigned">Resigned</option>
-                                <option value="Contract Ended">Contract Ended</option>
-                                <option value="Terminated">Terminated</option>
-                                <option value="Other">Other</option>
-                            </select>
+            <!-- Modal panel -->
+            <div
+                class="relative inline-block align-middle bg-white rounded-[2.5rem] text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-xl sm:w-full border border-white/20">
+                <div class="p-10">
+                    <div class="flex items-center justify-between mb-8">
+                        <div class="w-16 h-16 rounded-2xl bg-rose-50 text-rose-500 flex items-center justify-center">
+                            <i data-lucide="power" class="w-8 h-8"></i>
                         </div>
-                        <div class="space-y-2">
-                            <label
-                                class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Effective
-                                Date</label>
-                            <input type="date" name="termination_date" required value="{{ date('Y-m-d') }}"
-                                class="w-full px-4 py-3.5 bg-slate-50 border-none rounded-2xl text-sm font-bold text-slate-700 focus:ring-4 focus:ring-rose-500/10">
-                        </div>
+                        <button onclick="closeTerminateModal()"
+                            class="p-2 text-slate-400 hover:text-slate-600 transition-colors">
+                            <i data-lucide="x" class="w-6 h-6"></i>
+                        </button>
                     </div>
 
-                    <button type="submit"
-                        class="w-full py-4 bg-rose-500 rounded-2xl text-[10px] font-black text-white uppercase tracking-widest shadow-lg shadow-rose-100 hover:bg-rose-600 transition-all active:scale-95">
-                        Confirm Termination
-                    </button>
-                </form>
+                    <h3 class="text-3xl font-black text-slate-900 tracking-tight mb-2">Terminate Protocol</h3>
+                    <p class="text-slate-500 font-medium mb-4">Deactivating: <span id="terminateEmployeeName"
+                            class="text-rose-600 font-black underline"></span></p>
+                    <p class="text-slate-400 text-xs font-bold mb-8 uppercase tracking-widest">Archive this personnel
+                        node from the system registry.</p>
+
+                    <form id="terminateForm" method="POST" class="space-y-6">
+                        @csrf
+                        <div class="space-y-4">
+                            <div class="space-y-2">
+                                <label
+                                    class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Archive
+                                    Reason</label>
+                                <select name="termination_reason" required
+                                    class="w-full py-4 px-6 bg-slate-50 border-2 border-slate-50 rounded-2xl text-sm font-bold text-slate-700 focus:border-rose-400 focus:ring-4 focus:ring-rose-400/10 transition-all outline-none">
+                                    <option value="Resigned">Resigned</option>
+                                    <option value="Contract Ended">Contract Ended</option>
+                                    <option value="Dismissed">Dismissed</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            <div class="space-y-2">
+                                <label
+                                    class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Effective
+                                    Date</label>
+                                <input type="date" name="termination_date" required value="{{ date('Y-m-d') }}"
+                                    class="w-full py-4 px-6 bg-slate-50 border-2 border-slate-50 rounded-2xl text-sm font-bold text-slate-700 focus:border-rose-400 focus:ring-4 focus:ring-rose-400/10 transition-all outline-none">
+                            </div>
+                        </div>
+                        <button type="submit"
+                            class="w-full py-5 bg-rose-500 rounded-2xl text-[10px] font-black text-white uppercase tracking-widest shadow-xl shadow-rose-100 hover:bg-rose-600 transition-all active:scale-[0.98]">Confirm
+                            Permanent Termination</button>
+                    </form>
+                </div>
             </div>
         </div>
-    </dialog>
+    </div>
 
     <script>
+        function openImportModal() {
+            document.getElementById('importModal').classList.remove('hidden');
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+        function closeImportModal() {
+            document.getElementById('importModal').classList.add('hidden');
+        }
         function openTerminateModal(id, name) {
             document.getElementById('terminateEmployeeName').innerText = name;
             document.getElementById('terminateForm').action = `/admin/employees/${id}/terminate`;
-            document.getElementById('terminateModal').showModal();
+            document.getElementById('terminateModal').classList.remove('hidden');
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+        function closeTerminateModal() {
+            document.getElementById('terminateModal').classList.add('hidden');
         }
 
         // Animated Counters

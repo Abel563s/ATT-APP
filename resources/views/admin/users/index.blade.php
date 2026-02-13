@@ -59,7 +59,8 @@
                         <tr class="bg-slate-50/50 border-b border-slate-200">
                             <th class="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">Identify / Identity</th>
                             <th class="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">Department</th>
-                            <th class="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Protocol Role</th>
+                            <th class="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Role</th>
+                            <th class="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Status</th>
                             <th class="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Actions</th>
                         </tr>
                     </thead>
@@ -103,6 +104,16 @@
                                         {{ ucfirst($user->role) }}
                                     </span>
                                 </td>
+                                <td class="px-8 py-5 text-center">
+                                    <form action="{{ route('admin.users.toggle-status', $user) }}" method="POST" class="inline-block">
+                                        @csrf
+                                        @method('PATCH')
+                                        <button type="submit" 
+                                            class="relative inline-flex h-7 w-14 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-[#00ADC5] focus:ring-offset-2 {{ $user->is_active ? 'bg-emerald-500' : 'bg-slate-300' }}">
+                                            <span class="inline-block h-5 w-5 transform rounded-full bg-white shadow-lg transition-transform {{ $user->is_active ? 'translate-x-8' : 'translate-x-1' }}"></span>
+                                        </button>
+                                    </form>
+                                </td>
                                 <td class="px-8 py-5 text-right">
                                     <div class="flex items-center justify-end gap-2">
                                         <a href="{{ route('admin.users.edit', $user) }}" 
@@ -123,7 +134,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="4" class="px-8 py-12 text-center">
+                                <td colspan="5" class="px-8 py-12 text-center">
                                     <div class="flex flex-col items-center justify-center opacity-40">
                                         <i data-lucide="user-minus" class="w-12 h-12 mb-4"></i>
                                         <p class="text-xs font-black uppercase tracking-widest">No matching identity nodes found</p>
@@ -137,7 +148,7 @@
             
             @if($users->hasPages())
                 <div class="px-8 py-6 border-t border-slate-100 bg-slate-50/50">
-                    {{ $users->links() }}
+                    {{ $users->appends(request()->except('page'))->links() }}
                 </div>
             @endif
         </div>

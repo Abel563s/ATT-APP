@@ -61,18 +61,18 @@
             </div>
 
             @if(Auth::user()->isManager())
-                <div class="bg-slate-900 rounded-3xl p-6 shadow-xl ring-1 ring-white/10 relative overflow-hidden group">
+                <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm relative overflow-hidden group hover:border-[#00ADC5] transition-all">
                     <span
-                        class="text-[10px] font-black text-white/40 uppercase tracking-widest block mb-2 relative z-10">Approval
+                        class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2 relative z-10">Approval
                         Queue</span>
                     <div class="flex items-end justify-between relative z-10">
-                        <span class="text-3xl font-black text-white leading-none">{{ $stats['pending_approvals'] }}</span>
+                        <span class="text-3xl font-black text-slate-900 leading-none">{{ $stats['pending_approvals'] }}</span>
                         <a href="{{ route('manager.approvals.index') }}"
-                            class="text-[10px] font-black text-blue-400 uppercase hover:text-blue-300 transition-colors">Review
+                            class="text-[10px] font-black text-[#00ADC5] uppercase hover:text-[#007A8A] transition-colors">Review
                             Queue →</a>
                     </div>
                     <div
-                        class="absolute -right-4 -bottom-4 w-16 h-16 bg-blue-500/10 rounded-full blur-2xl group-hover:bg-blue-500/20 transition-all">
+                        class="absolute -right-4 -bottom-4 w-16 h-16 bg-[#00ADC5]/5 rounded-full blur-2xl group-hover:bg-[#00ADC5]/10 transition-all">
                     </div>
                 </div>
             @endif
@@ -176,37 +176,37 @@
 
             <!-- Side Cards -->
             <div class="lg:col-span-4 space-y-6">
-                <!-- Profile Summary Card -->
+                <!-- Profile Summary Card (Lightened) -->
                 <div
-                    class="bg-slate-900 rounded-3xl p-8 text-white relative overflow-hidden shadow-xl ring-1 ring-white/10">
+                    class="bg-white rounded-3xl p-8 border border-slate-200 relative overflow-hidden shadow-sm">
                     <div class="relative z-10">
                         <div
-                            class="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 p-0.5 mb-6 shadow-xl shadow-blue-500/20">
-                            <div class="w-full h-full rounded-[14px] bg-slate-900 flex items-center justify-center">
+                            class="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#00ADC5] to-[#007A8A] p-0.5 mb-6 shadow-xl shadow-[#00ADC5]/10">
+                            <div class="w-full h-full rounded-[14px] bg-white flex items-center justify-center">
                                 <span
-                                    class="text-2xl font-black text-white">{{ substr(Auth::user()->name, 0, 1) }}</span>
+                                    class="text-2xl font-black text-[#00ADC5]">{{ substr(Auth::user()->name, 0, 1) }}</span>
                             </div>
                         </div>
-                        <h4 class="text-xl font-black tracking-tight mb-1">{{ Auth::user()->name }}</h4>
-                        <p class="text-xs font-bold text-white/40 uppercase tracking-widest mb-8">
+                        <h4 class="text-xl font-black tracking-tight mb-1 text-slate-900">{{ Auth::user()->name }}</h4>
+                        <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-8">
                             {{ Auth::user()->email }}
                         </p>
-
+    
                         <div class="grid grid-cols-2 gap-4">
-                            <div class="p-4 bg-white/5 rounded-2xl border border-white/10">
-                                <span class="text-[9px] font-black text-white/40 uppercase block mb-1">My Role</span>
-                                <span class="text-sm font-bold text-white">{{ ucfirst(Auth::user()->role) }}</span>
+                            <div class="p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                                <span class="text-[9px] font-black text-slate-400 uppercase block mb-1">My Role</span>
+                                <span class="text-sm font-bold text-slate-700">{{ ucfirst(Auth::user()->role) }}</span>
                             </div>
-                            <div class="p-4 bg-white/5 rounded-2xl border border-white/10">
-                                <span class="text-[9px] font-black text-white/40 uppercase block mb-1">Member
+                            <div class="p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                                <span class="text-[9px] font-black text-slate-400 uppercase block mb-1">Member
                                     Since</span>
                                 <span
-                                    class="text-sm font-bold text-white">{{ Auth::user()->created_at->format('M Y') }}</span>
+                                    class="text-sm font-bold text-slate-700">{{ Auth::user()->created_at->format('M Y') }}</span>
                             </div>
                         </div>
                     </div>
                     <!-- Decor -->
-                    <div class="absolute -right-16 -top-16 w-32 h-32 bg-blue-500/10 rounded-full blur-3xl"></div>
+                    <div class="absolute -right-16 -top-16 w-32 h-32 bg-[#00ADC5]/5 rounded-full blur-3xl"></div>
                 </div>
 
                 <!-- System Stats -->

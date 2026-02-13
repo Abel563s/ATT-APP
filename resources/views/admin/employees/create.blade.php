@@ -76,8 +76,8 @@
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="space-y-2">
-                            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Division
-                                Node</label>
+                            <label
+                                class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Department</label>
                             <select name="department_id" required
                                 class="w-full rounded-2xl border-none bg-slate-50 p-4 font-bold text-slate-700 focus:ring-4 focus:ring-[#00ADC5]/10 text-sm appearance-none cursor-pointer">
                                 <option value="">Select Division</option>
@@ -88,23 +88,6 @@
                                 @endforeach
                             </select>
                             <x-input-error :messages="$errors->get('department_id')" />
-                        </div>
-                        <div class="space-y-2">
-                            <label
-                                class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Operating
-                                Site</label>
-                            <input type="text" name="site" value="{{ old('site') }}"
-                                class="w-full rounded-2xl border-none bg-slate-50 p-4 font-bold text-slate-700 focus:ring-4 focus:ring-[#00ADC5]/10 text-sm"
-                                placeholder="e.g. Headquarters, Factory A">
-                            <x-input-error :messages="$errors->get('site')" />
-                        </div>
-                        <div class="space-y-2">
-                            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Position
-                                / Title</label>
-                            <input type="text" name="position" value="{{ old('position') }}"
-                                class="w-full rounded-2xl border-none bg-slate-50 p-4 font-bold text-slate-700 focus:ring-4 focus:ring-[#00ADC5]/10 text-sm"
-                                placeholder="e.g. Senior Analyst">
-                            <x-input-error :messages="$errors->get('position')" />
                         </div>
                         <div class="space-y-2">
                             <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">System
@@ -140,7 +123,6 @@
                                 <option value="user" {{ old('role') == 'user' ? 'selected' : '' }}>User</option>
                                 <option value="manager" {{ old('role') == 'manager' ? 'selected' : '' }}>Manager</option>
                                 <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>Admin</option>
-                                <option value="department_attendance_user" {{ old('role') == 'department_attendance_user' ? 'selected' : '' }}>Division Attendance Terminal</option>
                             </select>
                             <x-input-error :messages="$errors->get('role')" />
                         </div>
@@ -150,22 +132,7 @@
                                 NOTE: New nodes initialized in <span class="text-rose-500 font-black">DEACTIVATED</span>
                                 state. Manual clearance required.</p>
                         </div>
-                        <div class="space-y-2">
-                            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Initial
-                                Access Key</label>
-                            <input type="password" name="password" required
-                                class="w-full rounded-2xl border-none bg-slate-50 p-4 font-bold text-slate-700 focus:ring-4 focus:ring-[#00ADC5]/10 text-sm"
-                                placeholder="••••••••">
-                            <x-input-error :messages="$errors->get('password')" />
-                        </div>
-                        <div class="space-y-2">
-                            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Confirm
-                                Access Key</label>
-                            <input type="password" name="password_confirmation" required
-                                class="w-full rounded-2xl border-none bg-slate-50 p-4 font-bold text-slate-700 focus:ring-4 focus:ring-[#00ADC5]/10 text-sm"
-                                placeholder="••••••••">
-                            <x-input-error :messages="$errors->get('password_confirmation')" />
-                        </div>
+
                     </div>
                 </div>
 

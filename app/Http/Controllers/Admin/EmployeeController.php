@@ -90,7 +90,6 @@ class EmployeeController extends Controller
             'email' => 'required|email|unique:employees,email|unique:users,email',
             'department_id' => 'required|exists:departments,id',
             'role' => 'required|in:admin,manager,user,department_attendance_user',
-            'password' => 'required|string|min:8|confirmed',
             'site' => 'nullable|string|max:255',
             'position' => 'nullable|string|max:255',
         ]);
@@ -111,7 +110,7 @@ class EmployeeController extends Controller
             $user = User::create([
                 'name' => $request->first_name . ' ' . $request->last_name,
                 'email' => $request->email,
-                'password' => Hash::make($request->password),
+                'password' => Hash::make('password'),
                 'role' => $request->role,
                 'department_id' => $request->department_id,
                 'employee_id' => $generatedId,

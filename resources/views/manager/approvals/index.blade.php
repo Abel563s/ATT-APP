@@ -11,14 +11,37 @@
                 </p>
             </div>
 
-            <div
-                class="flex items-center bg-blue-50 border border-blue-100 rounded-2xl px-5 py-3 shadow-sm text-blue-900">
-                <div class="flex flex-col">
-                    <span
-                        class="text-[10px] font-bold text-blue-400 uppercase tracking-widest leading-none mb-1">Pending
-                        Review</span>
-                    <span class="text-xl font-black text-blue-600">{{ $pendingAttendances->count() }} Records</span>
+            <div class="flex items-center gap-3">
+                <div
+                    class="flex items-center bg-blue-50 border border-blue-100 rounded-2xl px-5 py-3 shadow-sm text-blue-900">
+                    <div class="flex flex-col">
+                        <span
+                            class="text-[10px] font-bold text-blue-400 uppercase tracking-widest leading-none mb-1">Total
+                            in Queue</span>
+                        <span class="text-xl font-black text-blue-600">{{ $pendingAttendances->count() }} Records</span>
+                    </div>
                 </div>
+
+                @if(Auth::user()->isAdmin())
+                    <div
+                        class="flex items-center bg-amber-50 border border-amber-100 rounded-2xl px-5 py-3 shadow-sm text-amber-900">
+                        <div class="flex flex-col">
+                            <span
+                                class="text-[10px] font-bold text-amber-400 uppercase tracking-widest leading-none mb-1">Awaiting
+                                Manager</span>
+                            <span class="text-xl font-black text-amber-600">{{ $awaitingManagerCount }}</span>
+                        </div>
+                    </div>
+                    <div
+                        class="flex items-center bg-emerald-50 border border-emerald-100 rounded-2xl px-5 py-2.5 shadow-sm text-emerald-900">
+                        <div class="flex flex-col">
+                            <span
+                                class="text-[10px] font-bold text-emerald-400 uppercase tracking-widest leading-none mb-1">Awaiting
+                                Admin</span>
+                            <span class="text-xl font-black text-emerald-600">{{ $awaitingAdminCount }}</span>
+                        </div>
+                    </div>
+                @endif
             </div>
         </div>
 
@@ -56,6 +79,9 @@
                                     <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest">
                                         Submitted By</th>
                                     <th
+                                        class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest text-center">
+                                        Status</th>
+                                    <th
                                         class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-widest text-right rounded-r-2xl">
                                         Action</th>
                                 </tr>
@@ -83,19 +109,14 @@
                                                     Monday</span>
                                             </div>
                                         </td>
+                                        <td class="px-6 py-6 font-bold text-slate-700 text-xs">
+                                            {{ $attendance->submitter->name }}
+                                        </td>
                                         <td class="px-6 py-6">
-                                            <div class="flex items-center gap-3">
-                                                <div
-                                                    class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 font-bold border-2 border-white">
-                                                    {{ substr($attendance->submitter->name, 0, 1) }}
-                                                </div>
-                                                <div class="flex flex-col">
-                                                    <span
-                                                        class="text-slate-700 font-bold text-xs">{{ $attendance->submitter->name }}</span>
-                                                    <span
-                                                        class="text-[10px] font-medium text-slate-400">{{ $attendance->updated_at->diffForHumans() }}</span>
-                                                </div>
-                                            </div>
+                                            <span
+                                                class="px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider {{ $attendance->status->color() }}">
+                                                {{ $attendance->status->label() }}
+                                            </span>
                                         </td>
                                         <td class="px-6 py-6 text-right">
                                             <a href="{{ route('manager.approvals.show', $attendance->id) }}"

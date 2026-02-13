@@ -65,7 +65,9 @@ class AttendanceSystemSeeder extends Seeder
             'Procurement',
             'Qaqc',
             'Office Management',
-            'Building Structural'
+            'Infrastructure',
+            'Store',
+            'Planning' // Added Planning
         ];
 
         $deptModels = [];
@@ -81,8 +83,11 @@ class AttendanceSystemSeeder extends Seeder
             $counter = 1;
 
             // Manual overrides for known conflicts
-            if ($name === 'Building Structural') {
-                $displayCode = 'BST';
+            if ($name === 'Infrastructure') {
+                $displayCode = 'INF';
+            }
+            if ($name === 'Planning') {
+                $displayCode = 'PLN';
             }
 
             while (in_array($displayCode, $existingCodes)) {
@@ -113,8 +118,9 @@ class AttendanceSystemSeeder extends Seeder
             if ($name === 'Qaqc')
                 $displayName = 'QAQC';
 
-            $deptModels[$displayName] = Department::create([
-                'name' => $displayName,
+            $deptModels[$displayName] = Department::firstOrCreate([
+                'name' => $displayName
+            ], [
                 'code' => $displayCode,
                 'is_active' => true,
             ]);
@@ -342,7 +348,7 @@ class AttendanceSystemSeeder extends Seeder
             ['Alebachew Muchie', 'Operation'],
             ['Yosef Engida', 'Logistics'],
             ['Shewakena Engida', 'Logistics'],
-            ['Masresha Eshetu', 'Building Structural'],
+            ['Masresha Eshetu', 'Infrastructure'],
             ['Dawit Zerihun', 'Procurement'],
             ['Getachew Tamir', 'Store'],
             ['Tamiru Neku', 'Commercial'],
@@ -399,11 +405,7 @@ class AttendanceSystemSeeder extends Seeder
             $deptNameRaw = $row[1];
 
             // Normalize Dept Name
-            if (strtolower($deptNameRaw) === 'store') {
-                $deptNameNormalized = 'Finance';
-            } else {
-                $deptNameNormalized = $deptNameRaw;
-            }
+            $deptNameNormalized = $deptNameRaw;
 
             // Find Department ID (use the map to get clean name, or fallback)
             // Note: department names in $deptModels key are ucwords/upper.

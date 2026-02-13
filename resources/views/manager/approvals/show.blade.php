@@ -15,9 +15,9 @@
                     <div>
                         <div class="flex items-center gap-3">
                             <h2 class="text-3xl font-black text-slate-900 tracking-tight">Attendance Review</h2>
-                            <span
-                                class="px-3 py-1 bg-amber-50 text-amber-600 rounded-lg text-[10px] font-black uppercase tracking-[0.2em] ring-1 ring-amber-200 shadow-sm">Review
-                                Cycle</span>
+                            <span class="px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider {{ $attendance->status->color() }}">
+                                {{ $attendance->status->label() }}
+                            </span>
                         </div>
                         <p
                             class="text-slate-500 font-bold mt-1 uppercase text-xs tracking-widest flex items-center gap-2">
@@ -28,19 +28,26 @@
                 </div>
 
                 <div class="flex items-center gap-4">
-                    <button type="button" onclick="showRejectModal()"
-                        class="inline-flex items-center px-8 py-4 bg-white border-2 border-slate-100 rounded-2xl text-xs font-black text-slate-400 hover:text-red-500 hover:border-red-100 transition-all active:scale-95 uppercase tracking-widest group">
-                        <i data-lucide="x-circle" class="w-4 h-4 mr-3 transition-transform group-hover:rotate-90"></i>
-                        Decline Node
-                    </button>
-                    <form action="{{ route('manager.approvals.approve', $attendance->id) }}" method="POST">
-                        @csrf
-                        <button type="submit"
-                            class="inline-flex items-center px-10 py-4 bg-[#00ADC5] rounded-2xl text-xs font-black text-white shadow-2xl shadow-cyan-200 hover:bg-[#007A8A] transition-all active:scale-95 uppercase tracking-widest">
-                            <i data-lucide="check-circle" class="w-4 h-4 mr-3"></i>
-                            Authorize Batch
+                    @if(auth()->user()->isAdmin() && $attendance->status === \App\Enums\AttendanceStatus::PENDING)
+                        <div class="bg-amber-50 border border-amber-200 rounded-2xl px-6 py-4">
+                            <p class="text-[10px] font-black text-amber-600 uppercase tracking-widest leading-none mb-1">Awaiting Manager Approval</p>
+                            <p class="text-xs font-bold text-slate-500">Admins can approve after manager review.</p>
+                        </div>
+                    @else
+                        <button type="button" onclick="showRejectModal()"
+                            class="inline-flex items-center px-8 py-4 bg-white border-2 border-slate-100 rounded-2xl text-xs font-black text-slate-400 hover:text-red-500 hover:border-red-100 transition-all active:scale-95 uppercase tracking-widest group">
+                            <i data-lucide="x-circle" class="w-4 h-4 mr-3 transition-transform group-hover:rotate-90"></i>
+                            Reject
                         </button>
-                    </form>
+                        <form action="{{ route('manager.approvals.approve', $attendance->id) }}" method="POST">
+                            @csrf
+                            <button type="submit"
+                                class="inline-flex items-center px-10 py-4 bg-[#00ADC5] rounded-2xl text-xs font-black text-white shadow-2xl shadow-cyan-200 hover:bg-[#007A8A] transition-all active:scale-95 uppercase tracking-widest">
+                                <i data-lucide="check-circle" class="w-4 h-4 mr-3"></i>
+                                Approve
+                            </button>
+                        </form>
+                    @endif
                 </div>
             </div>
 
@@ -179,28 +186,28 @@
             </div>
 
             <div class="lg:col-span-4 space-y-6">
-                <div class="bg-slate-900 rounded-[2.5rem] p-10 relative overflow-hidden shadow-2xl">
-                    <h3 class="text-xs font-black text-white/30 uppercase tracking-[0.2em] mb-8 relative z-10">
+                <div class="bg-white rounded-[2.5rem] p-10 relative overflow-hidden shadow-sm border border-slate-200">
+                    <h3 class="text-xs font-black text-slate-400 uppercase tracking-[0.2em] mb-8 relative z-10">
                         Verification Node</h3>
                     <div class="space-y-4 relative z-10">
                         <div
-                            class="p-6 bg-white/5 rounded-2xl border border-white/10 hover:bg-white/10 transition-all cursor-pointer group">
+                            class="p-6 bg-slate-50 rounded-2xl border border-slate-100 hover:bg-slate-100 transition-all cursor-pointer group">
                             <i data-lucide="download"
-                                class="w-4 h-4 text-white/40 mb-3 group-hover:text-white transition-colors"></i>
-                            <span class="text-[10px] font-black text-white/40 uppercase block mb-1">Raw Export</span>
-                            <span class="text-sm font-bold text-white">Capture System Snapshot</span>
+                                class="w-4 h-4 text-[#00ADC5] mb-3 group-hover:scale-110 transition-transform"></i>
+                            <span class="text-[10px] font-black text-slate-400 uppercase block mb-1">Raw Export</span>
+                            <span class="text-sm font-bold text-slate-900">Capture System Snapshot</span>
                         </div>
                         <div
-                            class="p-6 bg-white/5 rounded-2xl border border-white/10 hover:bg-white/10 transition-all cursor-pointer group">
+                            class="p-6 bg-slate-50 rounded-2xl border border-slate-100 hover:bg-slate-100 transition-all cursor-pointer group">
                             <i data-lucide="bell"
-                                class="w-4 h-4 text-white/40 mb-3 group-hover:text-white transition-colors"></i>
-                            <span class="text-[10px] font-black text-white/40 uppercase block mb-1">Alert
+                                class="w-4 h-4 text-[#00ADC5] mb-3 group-hover:scale-110 transition-transform"></i>
+                            <span class="text-[10px] font-black text-slate-400 uppercase block mb-1">Alert
                                 Submitter</span>
-                            <span class="text-sm font-bold text-white">Broadcast Protocol Status</span>
+                            <span class="text-sm font-bold text-slate-900">Broadcast Protocol Status</span>
                         </div>
                     </div>
                     <!-- Decor -->
-                    <div class="absolute -right-24 -bottom-24 w-64 h-64 bg-[#00ADC5]/10 rounded-full blur-3xl"></div>
+                    <div class="absolute -right-24 -bottom-24 w-64 h-64 bg-[#00ADC5]/5 rounded-full blur-3xl"></div>
                 </div>
             </div>
         </div>

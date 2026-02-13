@@ -70,6 +70,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/employees/import/process', [AdminEmployeeController::class, 'importProcess'])->name('employees.import.process');
         Route::resource('employees', AdminEmployeeController::class);
         Route::resource('departments', AdminDepartmentController::class);
+        Route::patch('/users/{user}/toggle-status', [AdminUserController::class, 'toggleStatus'])->name('users.toggle-status');
         Route::resource('users', AdminUserController::class);
     });
 

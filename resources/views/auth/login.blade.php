@@ -73,7 +73,7 @@
             <div class="pt-2">
                 <button type="submit"
                     class="w-full bg-slate-900 border-2 border-slate-900 py-4 rounded-2xl text-sm font-black text-white uppercase tracking-[0.2em] shadow-2xl shadow-slate-900/20 hover:bg-white hover:text-slate-900 transition-all active:scale-[0.98] focus:outline-none focus:ring-4 focus:ring-blue-500/10">
-                    Initialize Session
+                    Sign in
                 </button>
             </div>
         </form>

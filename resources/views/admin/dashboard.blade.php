@@ -154,25 +154,28 @@
 
             <!-- Quick Access / Sidebar -->
             <div class="lg:col-span-4 space-y-6">
-                <!-- Status Distribution -->
-                <div class="bg-slate-900 rounded-3xl p-8 text-white relative overflow-hidden shadow-sm">
-                    <h3 class="text-xs font-black text-white/50 uppercase tracking-widest mb-6">Status</h3>
+                <!-- Status Composition (Lightened) -->
+                <div class="bg-white rounded-3xl p-8 border border-slate-200 relative overflow-hidden shadow-sm">
+                    <h3 class="text-xs font-black text-slate-400 uppercase tracking-widest mb-6">Status Composition</h3>
                     <div class="space-y-6 relative z-10">
                         @foreach(['Approved', 'Pending', 'Rejected'] as $stat)
                             <div class="space-y-2">
                                 <div
                                     class="flex justify-between items-center text-[10px] font-black tracking-widest uppercase">
-                                    <span class="text-white/70">{{ $stat }}</span>
-                                    <span>{{ $loop->first ? '85%' : ($loop->index == 1 ? '15%' : '0%') }}</span>
+                                    <span class="text-slate-500">{{ $stat }}</span>
+                                    <span
+                                        class="text-slate-900">{{ $loop->first ? '85%' : ($loop->index == 1 ? '15%' : '0%') }}</span>
                                 </div>
-                                <div class="h-1.5 w-full bg-white/10 rounded-full overflow-hidden">
-                                    <div class="h-full rounded-full @if($loop->index == 0) bg-emerald-400 @elseif($loop->index == 1) bg-amber-400 @else bg-rose-400 @endif"
+                                <div class="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
+                                    <div class="h-full rounded-full @if($loop->index == 0) bg-emerald-500 @elseif($loop->index == 1) bg-amber-500 @else bg-rose-500 @endif"
                                         style="width: {{ $loop->first ? '85%' : ($loop->index == 1 ? '15%' : '0%') }}">
                                     </div>
                                 </div>
                             </div>
                         @endforeach
                     </div>
+                    <!-- Decor -->
+                    <div class="absolute -right-16 -top-16 w-32 h-32 bg-slate-50 rounded-full blur-3xl"></div>
                 </div>
 
                 <!-- Admin Shortcuts -->

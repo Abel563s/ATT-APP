@@ -51,7 +51,6 @@ class DashboardController extends Controller
         $attendanceHistory = [];
         if ($effectiveDeptId) {
             $attendanceHistory = WeeklyAttendance::where('department_id', $effectiveDeptId)
-                ->where('status', '!=', AttendanceStatus::DRAFT)
                 ->latest('updated_at')
                 ->take(5)
                 ->get();

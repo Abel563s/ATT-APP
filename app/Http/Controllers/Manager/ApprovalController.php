@@ -15,22 +15,34 @@ class ApprovalController extends Controller
     {
         $user = Auth::user();
 
-        // Managers see attendances for departments they manage
-        // Admin sees everything
-        $query = WeeklyAttendance::with(['department', 'submitter'])
-            ->where('status', AttendanceStatus::PENDING);
+        // Managers see PENDING attendances for departments they manage
+        // Admin sees PENDING_ADMIN (manager-approved) attendances
+        $query = WeeklyAttendance::with(['department', 'submitter']);
 
-        if (!$user->isAdmin()) {
+        if ($user->isAdmin()) {
+            // Admin sees both records pending manager approval and records pending admin approval
+            $query->whereIn('status', [AttendanceStatus::PENDING, AttendanceStatus::PENDING_ADMIN]);
+        } else {
+            // Managers see records pending manager approval
             $managedDeptIds = $user->getResponsibleDepartmentIds();
-            $query->whereIn('department_id', $managedDeptIds);
+            $query->where('status', AttendanceStatus::PENDING)
+                ->whereIn('department_id', $managedDeptIds);
         }
 
         $pendingAttendances = $query->orderBy('week_start_date', 'desc')->get();
 
+        $awaitingManagerCount = 0;
+        $awaitingAdminCount = 0;
+
+        if ($user->isAdmin()) {
+            $awaitingManagerCount = WeeklyAttendance::where('status', AttendanceStatus::PENDING)->count();
+            $awaitingAdminCount = WeeklyAttendance::where('status', AttendanceStatus::PENDING_ADMIN)->count();
+        }
+
         // Debug: Log what we're getting
         \Log::info('Approval Index - User: ' . $user->id . ', Role: ' . $user->role . ', Pending Count: ' . $pendingAttendances->count());
 
-        return view('manager.approvals.index', compact('pendingAttendances'));
+        return view('manager.approvals.index', compact('pendingAttendances', 'awaitingManagerCount', 'awaitingAdminCount'));
     }
 
     public function show(WeeklyAttendance $attendance)
@@ -43,15 +55,32 @@ class ApprovalController extends Controller
 
     public function approve(Request $request, WeeklyAttendance $attendance)
     {
+        $user = Auth::user();
+
+        if ($user->isAdmin() && $attendance->status === AttendanceStatus::PENDING) {
+            return redirect()->back()->with('error', 'This record requires manager approval before admin approval.');
+        }
+
+        // Determine the new status based on user role
+        if ($user->isAdmin()) {
+            // Admin gives final approval
+            $newStatus = AttendanceStatus::APPROVED;
+            $message = 'Attendance approved successfully.';
+        } else {
+            // Manager approves, moves to pending admin approval
+            $newStatus = AttendanceStatus::PENDING_ADMIN;
+            $message = 'Attendance approved and forwarded to admin for final approval.';
+        }
+
         $attendance->update([
-            'status' => AttendanceStatus::APPROVED,
+            'status' => $newStatus,
             'approved_by' => Auth::id(),
         ]);
 
         ApprovalLog::create([
             'weekly_attendance_id' => $attendance->id,
             'user_id' => Auth::id(),
-            'action' => 'approved',
+            'action' => $user->isAdmin() ? 'approved' : 'manager_approved',
             'comment' => $request->comment,
         ]);
 
@@ -60,7 +89,13 @@ class ApprovalController extends Controller
             $attendance->submitter->notify(new \App\Notifications\AttendanceStatusUpdated($attendance));
         }
 
-        return redirect()->route('manager.approvals.index')->with('success', 'Attendance approved successfully.');
+        // Notify Admins (if manager approved or if admin approved)
+        $admins = \App\Models\User::where('role', 'admin')
+            ->where('id', '!=', Auth::id())
+            ->get();
+        \Illuminate\Support\Facades\Notification::send($admins, new \App\Notifications\AttendanceStatusUpdated($attendance));
+
+        return redirect()->route('manager.approvals.index')->with('success', $message);
     }
 
     public function reject(Request $request, WeeklyAttendance $attendance)

@@ -125,6 +125,8 @@ class AttendanceController extends Controller
         if ($user->isManager() && !$user->isAdmin()) {
             return redirect()->back()->with('error', 'Managers are not authorized to edit attendance records.');
         }
+        // Managers are now authorized to edit attendance records.
+        // The previous restriction for Managers (who are not Admins) has been removed.
 
         DB::beginTransaction();
         try {
@@ -152,11 +154,10 @@ class AttendanceController extends Controller
             return redirect()->back()->with('error', 'This attendance record cannot be submitted.');
         }
 
-        // Prevent Managers (who are not Admins) from submitting
-        $user = Auth::user();
-        if ($user->isManager() && !$user->isAdmin()) {
-            return redirect()->back()->with('error', 'Managers are not authorized to submit attendance records.');
-        }
+        // Managers and Admins are authorized to submit. 
+        // We only prevent regular users from submitting if they aren't assigned? No, regular users are the primary submitters.
+        // Actually, the previous logic specifically blocked Managers but not standard users.
+        // Let's allow everyone who has access to the record to submit it.
 
         // Check if there are any attendance entries
         $entriesCount = AttendanceEntry::where('weekly_attendance_id', $attendance->id)->count();

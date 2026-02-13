@@ -22,7 +22,10 @@ class DashboardController extends Controller
      */
     public function index(Request $request)
     {
-        $pendingApprovals = \App\Models\WeeklyAttendance::where('status', \App\Enums\AttendanceStatus::PENDING)->count();
+        $pendingApprovals = \App\Models\WeeklyAttendance::whereIn('status', [
+            \App\Enums\AttendanceStatus::PENDING,
+            \App\Enums\AttendanceStatus::PENDING_ADMIN
+        ])->count();
         $totalEmployees = \App\Models\Employee::active()->count();
         $totalDepartments = \App\Models\Department::active()->count();
 
@@ -140,8 +143,7 @@ class DashboardController extends Controller
 
     protected function getHistoryQuery(Request $request)
     {
-        $query = \App\Models\WeeklyAttendance::with(['department', 'submitter', 'approver'])
-            ->where('status', '!=', \App\Enums\AttendanceStatus::DRAFT);
+        $query = \App\Models\WeeklyAttendance::with(['department', 'submitter', 'approver']);
 
         // Apply filters
         if ($request->filled('department_id')) {
