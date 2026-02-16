@@ -161,7 +161,8 @@ class AttendanceController extends Controller
 
         // Check if there are any attendance entries
         $entriesCount = AttendanceEntry::where('weekly_attendance_id', $attendance->id)->count();
-        $employeeCount = Employee::where('department_id', $attendance->department_id)
+        $employeeCount = Employee::active()
+            ->where('department_id', $attendance->department_id)
             ->whereHas('user', function ($q) {
                 $q->whereNotIn('role', ['admin', 'manager']);
             })
@@ -176,9 +177,10 @@ class AttendanceController extends Controller
         }
 
         // Check for any incomplete entries (any cell that is null or empty)
+        // Note: Saturday only has morning (sat_m), no afternoon session
         $incompleteEntries = AttendanceEntry::where('weekly_attendance_id', $attendance->id)
             ->where(function ($query) {
-                $fields = ['mon_m', 'mon_a', 'tue_m', 'tue_a', 'wed_m', 'wed_a', 'thu_m', 'thu_a', 'fri_m', 'fri_a', 'sat_m', 'sat_a'];
+                $fields = ['mon_m', 'mon_a', 'tue_m', 'tue_a', 'wed_m', 'wed_a', 'thu_m', 'thu_a', 'fri_m', 'fri_a', 'sat_m'];
                 foreach ($fields as $field) {
                     $query->orWhereNull($field)->orWhere($field, '');
                 }

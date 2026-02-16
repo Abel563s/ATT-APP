@@ -11,6 +11,19 @@ class Employee extends Model
 {
     use HasFactory;
 
+    /**
+     * Boot the model and register event listeners.
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        // Automatically delete attendance entries when employee is deleted
+        static::deleting(function ($employee) {
+            $employee->attendanceEntries()->delete();
+        });
+    }
+
     protected $fillable = [
         'user_id',
         'department_id',

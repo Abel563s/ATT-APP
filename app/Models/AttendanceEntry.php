@@ -24,7 +24,7 @@ class AttendanceEntry extends Model
         'fri_m',
         'fri_a',
         'sat_m',
-        'sat_a',
+        // Note: Saturday only has morning session, no afternoon
     ];
 
     // Removed Enum casts to support database-driven attendance codes

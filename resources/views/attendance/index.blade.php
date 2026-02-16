@@ -87,7 +87,7 @@
                                     <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Team Member Information</span>
                                 </th>
                                 @foreach(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'] as $day)
-                                    <th class="px-2 py-4 border-r border-slate-100 last:border-slate-200" colspan="2">
+                                    <th class="px-2 py-4 border-r border-slate-100 last:border-slate-200" colspan="{{ $day === 'Saturday' ? '1' : '2' }}">
                                         <span class="text-[10px] font-black text-slate-600 uppercase tracking-widest leading-none block mb-1">{{ $day }}</span>
                                         <span class="text-[9px] font-bold text-slate-400 uppercase tracking-tighter">{{ $attendance->week_start_date->addDays($loop->index)->format('d M') }}</span>
                                     </th>
@@ -97,7 +97,9 @@
                                 <th class="sticky left-0 bg-slate-50/30 z-20 border-r border-slate-200 px-8 py-1"></th>
                                 @foreach(['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'] as $day)
                                     <th class="py-2 px-1 border-r border-slate-100">Morn</th>
-                                    <th class="py-2 px-1 border-r border-slate-100 last:border-slate-200">Aftr</th>
+                                    @if($day !== 'Sat')
+                                        <th class="py-2 px-1 border-r border-slate-100 last:border-slate-200">Aftr</th>
+                                    @endif
                                 @endforeach
                             </tr>
                         </thead>
@@ -118,6 +120,9 @@
                                     
                                     @foreach(['mon', 'tue', 'wed', 'thu', 'fri', 'sat'] as $day)
                                         @foreach(['m', 'a'] as $period)
+                                            @if($day === 'sat' && $period === 'a')
+                                                @continue
+                                            @endif
                                             @php 
                                                 $field = "{$day}_{$period}";
                                                 $value = $entries->has($employee->id) ? $entries[$employee->id]->{$field} : null;
