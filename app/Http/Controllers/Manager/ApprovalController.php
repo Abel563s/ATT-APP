@@ -61,39 +61,57 @@ class ApprovalController extends Controller
             return redirect()->back()->with('error', 'This record requires manager approval before admin approval.');
         }
 
+        // Safeguard: Prevent double approval or acting on rejected records
+        if ($attendance->status === AttendanceStatus::APPROVED) {
+            return redirect()->back()->with('error', 'This attendance record is already approved.');
+        }
+
+        if ($attendance->status === AttendanceStatus::REJECTED) {
+            return redirect()->back()->with('error', 'Cannot approve a rejected record. It must be resubmitted.');
+        }
+
         // Determine the new status based on user role
         if ($user->isAdmin()) {
-            // Admin gives final approval
+            // Admin gives final approval (from pending_admin)
             $newStatus = AttendanceStatus::APPROVED;
             $message = 'Attendance approved successfully.';
         } else {
             // Manager approves, moves to pending admin approval
+            if ($attendance->status !== AttendanceStatus::PENDING) {
+                return redirect()->back()->with('error', 'Only records with "Pending Manager" status can be approved by a manager.');
+            }
             $newStatus = AttendanceStatus::PENDING_ADMIN;
             $message = 'Attendance approved and forwarded to admin for final approval.';
         }
 
-        $attendance->update([
-            'status' => $newStatus,
-            'approved_by' => Auth::id(),
-        ]);
+        \Illuminate\Support\Facades\DB::transaction(function () use ($attendance, $newStatus, $request, $user) {
+            $attendance->update([
+                'status' => $newStatus,
+                'approved_by' => Auth::id(),
+            ]);
 
-        ApprovalLog::create([
-            'weekly_attendance_id' => $attendance->id,
-            'user_id' => Auth::id(),
-            'action' => $user->isAdmin() ? 'approved' : 'manager_approved',
-            'comment' => $request->comment,
-        ]);
+            ApprovalLog::create([
+                'weekly_attendance_id' => $attendance->id,
+                'user_id' => Auth::id(),
+                'action' => $user->isAdmin() ? 'approved' : 'manager_approved',
+                'comment' => $request->comment,
+            ]);
+        });
 
         // Notify Submitter
-        if ($attendance->submitter) {
-            $attendance->submitter->notify(new \App\Notifications\AttendanceStatusUpdated($attendance));
-        }
+        try {
+            if ($attendance->submitter) {
+                $attendance->submitter->notify(new \App\Notifications\AttendanceStatusUpdated($attendance));
+            }
 
-        // Notify Admins (if manager approved or if admin approved)
-        $admins = \App\Models\User::where('role', 'admin')
-            ->where('id', '!=', Auth::id())
-            ->get();
-        \Illuminate\Support\Facades\Notification::send($admins, new \App\Notifications\AttendanceStatusUpdated($attendance));
+            // Notify Admins (if manager approved or if admin approved)
+            $admins = \App\Models\User::where('role', 'admin')
+                ->where('id', '!=', Auth::id())
+                ->get();
+            \Illuminate\Support\Facades\Notification::send($admins, new \App\Notifications\AttendanceStatusUpdated($attendance));
+        } catch (\Exception $e) {
+            \Log::error('Attendance approval notification failed: ' . $e->getMessage());
+        }
 
         return redirect()->route('manager.approvals.index')->with('success', $message);
     }
@@ -104,21 +122,32 @@ class ApprovalController extends Controller
             'comment' => 'required|string|max:500',
         ]);
 
-        $attendance->update([
-            'status' => AttendanceStatus::REJECTED,
-            'rejection_reason' => $request->comment,
-        ]);
+        // Safeguard
+        if ($attendance->status === AttendanceStatus::APPROVED) {
+            return redirect()->back()->with('error', 'Cannot reject an already approved record.');
+        }
 
-        ApprovalLog::create([
-            'weekly_attendance_id' => $attendance->id,
-            'user_id' => Auth::id(),
-            'action' => 'rejected',
-            'comment' => $request->comment,
-        ]);
+        \Illuminate\Support\Facades\DB::transaction(function () use ($attendance, $request) {
+            $attendance->update([
+                'status' => AttendanceStatus::REJECTED,
+                'rejection_reason' => $request->comment,
+            ]);
+
+            ApprovalLog::create([
+                'weekly_attendance_id' => $attendance->id,
+                'user_id' => Auth::id(),
+                'action' => 'rejected',
+                'comment' => $request->comment,
+            ]);
+        });
 
         // Notify Submitter
-        if ($attendance->submitter) {
-            $attendance->submitter->notify(new \App\Notifications\AttendanceStatusUpdated($attendance));
+        try {
+            if ($attendance->submitter) {
+                $attendance->submitter->notify(new \App\Notifications\AttendanceStatusUpdated($attendance));
+            }
+        } catch (\Exception $e) {
+            \Log::error('Attendance rejection notification failed: ' . $e->getMessage());
         }
 
         return redirect()->route('manager.approvals.index')->with('success', 'Attendance rejected.');

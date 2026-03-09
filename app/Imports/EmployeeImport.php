@@ -29,7 +29,9 @@ class EmployeeImport implements ToModel, WithHeadingRow, WithValidation
     {
         // Check if employee already exists by employee_id or email
         $existingEmployee = Employee::where('employee_id', $row['employee_id'])
-            ->orWhere('email', $row['email'])
+            ->when(!empty($row['email']), function ($q) use ($row) {
+                return $q->orWhere('email', $row['email']);
+            })
             ->first();
 
         if ($existingEmployee) {
@@ -47,12 +49,12 @@ class EmployeeImport implements ToModel, WithHeadingRow, WithValidation
         // Create user account
         $user = User::create([
             'name' => $row['first_name'] . ' ' . $row['last_name'],
-            'email' => $row['email'],
+            'email' => $row['email'] ?? null,
             'password' => Hash::make(Str::random(12)), // Random password for imported employees
             'role' => strtolower($row['role'] ?? 'user'),
             'department_id' => $department->id,
             'employee_id' => $row['employee_id'],
-            'is_active' => true,
+            'is_active' => false, // Default to inactive
         ]);
 
         return new Employee([
@@ -61,12 +63,12 @@ class EmployeeImport implements ToModel, WithHeadingRow, WithValidation
             'employee_id' => $row['employee_id'],
             'first_name' => $row['first_name'],
             'last_name' => $row['last_name'],
-            'email' => $row['email'],
+            'email' => $row['email'] ?? null,
             'position' => $row['position'] ?? $row['role'],
             'site' => $row['site'] ?? null,
             'date_of_joining' => now(),
-            'status' => 'active',
-            'is_active' => true,
+            'status' => 'inactive', // Default to inactive
+            'is_active' => false,
         ]);
     }
 
@@ -75,7 +77,7 @@ class EmployeeImport implements ToModel, WithHeadingRow, WithValidation
         return [
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
-            'email' => 'required|email',
+            'email' => 'nullable|email',
             'employee_id' => 'required|string|unique:employees,employee_id',
             'department' => 'required|string',
             'role' => 'required|string|in:admin,manager,user,department_attendance_user',

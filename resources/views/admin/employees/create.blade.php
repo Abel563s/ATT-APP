@@ -48,14 +48,6 @@
                                 placeholder="Doe">
                             <x-input-error :messages="$errors->get('last_name')" />
                         </div>
-                        <div class="space-y-2 md:col-span-2">
-                            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Secure
-                                Email</label>
-                            <input type="email" name="email" value="{{ old('email') }}" required
-                                class="w-full rounded-2xl border-none bg-slate-50 p-4 font-bold text-slate-700 focus:ring-4 focus:ring-[#00ADC5]/10 text-sm"
-                                placeholder="john.doe@corporate.com">
-                            <x-input-error :messages="$errors->get('email')" />
-                        </div>
                     </div>
                 </div>
 

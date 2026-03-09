@@ -22,13 +22,6 @@
                 </div>
 
                 <div class="flex items-center gap-4">
-                    <div
-                        class="bg-white border border-slate-200 rounded-2xl px-5 py-3 shadow-sm flex flex-col items-end">
-                        <span
-                            class="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Local
-                            Time</span>
-                        <span class="text-lg font-bold text-slate-700">{{ now()->format('h:i A') }}</span>
-                    </div>
                     <div class="bg-blue-600 rounded-2xl px-6 py-4 shadow-lg shadow-blue-200 text-white">
                         <span
                             class="text-[10px] font-black opacity-60 uppercase tracking-widest block mb-0.5">Today</span>
@@ -209,25 +202,7 @@
                     <div class="absolute -right-16 -top-16 w-32 h-32 bg-[#00ADC5]/5 rounded-full blur-3xl"></div>
                 </div>
 
-                <!-- System Stats -->
-                <div class="bg-white rounded-3xl border border-slate-200 p-8 space-y-6">
-                    <h3
-                        class="text-xs font-black text-slate-400 uppercase tracking-widest border-b border-slate-100 pb-4">
-                        Infrastructure Status</h3>
-                    <div class="space-y-4">
-                        @foreach(['Central Database', 'Auth Server', 'Vite Assets'] as $item)
-                            <div class="flex items-center justify-between">
-                                <span class="text-xs font-bold text-slate-600">{{ $item }}</span>
-                                <div class="flex items-center gap-1.5">
-                                    <div
-                                        class="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]">
-                                    </div>
-                                    <span class="text-[10px] font-black text-slate-400 uppercase">Operational</span>
-                                </div>
-                            </div>
-                        @endforeach
-                    </div>
-                </div>
+
             </div>
         </div>
     </div>

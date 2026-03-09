@@ -18,6 +18,67 @@
             </div>
         </div>
 
+        <!-- Summary Cards -->
+        <div class="flex flex-wrap lg:flex-nowrap gap-3 items-stretch">
+            <div
+                class="flex-1 min-w-[180px] bg-white rounded-2xl p-4 border border-slate-200 shadow-sm flex items-center gap-3 transition-all hover:shadow-md">
+                <div class="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-blue-500 shrink-0">
+                    <i data-lucide="send" class="w-5 h-5"></i>
+                </div>
+                <div class="min-w-0">
+                    <h4 class="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-tight truncate">
+                        Total Submitted</h4>
+                    <p class="text-lg font-black text-slate-900 leading-none mt-1">{{ $stats['total_submitted'] }}</p>
+                </div>
+            </div>
+            <div
+                class="flex-1 min-w-[180px] bg-white rounded-2xl p-4 border border-slate-200 shadow-sm flex items-center gap-3 transition-all hover:shadow-md">
+                <div class="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center text-amber-500 shrink-0">
+                    <i data-lucide="clock" class="w-5 h-5"></i>
+                </div>
+                <div class="min-w-0">
+                    <h4 class="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-tight truncate">
+                        Awaiting Manager</h4>
+                    <p class="text-lg font-black text-slate-900 leading-none mt-1">{{ $stats['pending_manager'] }}</p>
+                </div>
+            </div>
+            <div
+                class="flex-1 min-w-[180px] bg-white rounded-2xl p-4 border border-slate-200 shadow-sm flex items-center gap-3 transition-all hover:shadow-md">
+                <div
+                    class="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-500 shrink-0">
+                    <i data-lucide="shield-check" class="w-5 h-5"></i>
+                </div>
+                <div class="min-w-0">
+                    <h4 class="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-tight truncate">
+                        Awaiting Admin</h4>
+                    <p class="text-lg font-black text-slate-900 leading-none mt-1">{{ $stats['pending_admin'] }}</p>
+                </div>
+            </div>
+            <div
+                class="flex-1 min-w-[180px] bg-white rounded-2xl p-4 border border-slate-200 shadow-sm flex items-center gap-3 transition-all hover:shadow-md">
+                <div
+                    class="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-500 shrink-0">
+                    <i data-lucide="check-circle" class="w-5 h-5"></i>
+                </div>
+                <div class="min-w-0">
+                    <h4 class="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-tight truncate">
+                        Total Approved</h4>
+                    <p class="text-lg font-black text-slate-900 leading-none mt-1">{{ $stats['approved'] }}</p>
+                </div>
+            </div>
+            <div
+                class="flex-1 min-w-[180px] bg-white rounded-2xl p-4 border border-slate-200 shadow-sm flex items-center gap-3 transition-all hover:shadow-md">
+                <div class="w-10 h-10 rounded-xl bg-rose-50 flex items-center justify-center text-rose-500 shrink-0">
+                    <i data-lucide="x-circle" class="w-5 h-5"></i>
+                </div>
+                <div class="min-w-0">
+                    <h4 class="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-tight truncate">
+                        Total Rejected</h4>
+                    <p class="text-lg font-black text-slate-900 leading-none mt-1">{{ $stats['rejected'] }}</p>
+                </div>
+            </div>
+        </div>
+
         <!-- Filters (Admin only or restricted) -->
         <div class="bg-white rounded-3xl shadow-sm border border-slate-200 p-6">
             <form method="GET" action="{{ route('attendance.history') }}" class="grid grid-cols-1 md:grid-cols-4 gap-4">

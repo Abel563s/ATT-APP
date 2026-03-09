@@ -221,8 +221,12 @@ class AttendanceController extends Controller
         $recipients = $recipients->concat($admins)->unique('id');
 
         if ($recipients->isNotEmpty()) {
-            \Illuminate\Support\Facades\Notification::send($recipients, new \App\Notifications\AttendanceSubmitted($attendance));
-            \Log::info("Attendance submission notification sent to " . $recipients->count() . " recipients.");
+            try {
+                \Illuminate\Support\Facades\Notification::send($recipients, new \App\Notifications\AttendanceSubmitted($attendance));
+                \Log::info("Attendance submission notification sent to " . $recipients->count() . " recipients.");
+            } catch (\Exception $e) {
+                \Log::error("Failed to send attendance submission notification: " . $e->getMessage());
+            }
         } else {
             \Log::error("No recipients found for attendance submission notification (Attendance ID: {$attendance->id})");
         }

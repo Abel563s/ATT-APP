@@ -141,26 +141,29 @@ class DashboardController extends Controller
         ]);
     }
 
-    protected function getHistoryQuery(Request $request)
+    protected function getHistoryQuery(Request $request, $ignoreStatus = false)
     {
         $query = \App\Models\WeeklyAttendance::with(['department', 'submitter', 'approver']);
 
-        // Apply filters
+        // Apply department filter
         if ($request->filled('department_id')) {
             $query->where('department_id', $request->department_id);
         }
 
-        if ($request->filled('status')) {
+        // Apply status filter (only if not ignored)
+        if (!$ignoreStatus && $request->filled('status')) {
             $statusMap = [
                 'pending' => \App\Enums\AttendanceStatus::PENDING,
                 'approved' => \App\Enums\AttendanceStatus::APPROVED,
                 'rejected' => \App\Enums\AttendanceStatus::REJECTED,
+                'draft' => \App\Enums\AttendanceStatus::DRAFT,
             ];
             if (isset($statusMap[$request->status])) {
                 $query->where('status', $statusMap[$request->status]);
             }
         }
 
+        // Apply date filter
         if ($request->filled('from_date')) {
             $query->where('week_start_date', '>=', $request->from_date);
         }
@@ -173,7 +176,22 @@ class DashboardController extends Controller
         $records = $this->getHistoryQuery($request)->paginate(20);
         $departments = \App\Models\Department::active()->orderBy('name')->get();
 
-        return view('admin.attendance.history', compact('records', 'departments'));
+        // Stats for the history page (respects dept/date but NOT status filter)
+        $statsQuery = $this->getHistoryQuery($request, true);
+
+        $stats = [
+            'total_submitted' => (clone $statsQuery)->whereIn('status', [
+                \App\Enums\AttendanceStatus::PENDING,
+                \App\Enums\AttendanceStatus::PENDING_ADMIN,
+                \App\Enums\AttendanceStatus::APPROVED
+            ])->count(),
+            'pending_manager' => (clone $statsQuery)->where('status', \App\Enums\AttendanceStatus::PENDING)->count(),
+            'pending_admin' => (clone $statsQuery)->where('status', \App\Enums\AttendanceStatus::PENDING_ADMIN)->count(),
+            'approved' => (clone $statsQuery)->where('status', \App\Enums\AttendanceStatus::APPROVED)->count(),
+            'rejected' => (clone $statsQuery)->where('status', \App\Enums\AttendanceStatus::REJECTED)->count(),
+        ];
+
+        return view('admin.attendance.history', compact('records', 'departments', 'stats'));
     }
 
     public function exportHistory(Request $request)

@@ -57,6 +57,21 @@ class HistoryController extends Controller
             $query->where('week_start_date', '>=', $request->from_date);
         }
 
+        // Stats for the history page (respects dept/date but NOT status filter)
+        $statsQuery = clone $query;
+
+        $stats = [
+            'total_submitted' => (clone $statsQuery)->whereIn('status', [
+                AttendanceStatus::PENDING,
+                AttendanceStatus::PENDING_ADMIN,
+                AttendanceStatus::APPROVED
+            ])->count(),
+            'pending_manager' => (clone $statsQuery)->where('status', AttendanceStatus::PENDING)->count(),
+            'pending_admin' => (clone $statsQuery)->where('status', AttendanceStatus::PENDING_ADMIN)->count(),
+            'approved' => (clone $statsQuery)->where('status', AttendanceStatus::APPROVED)->count(),
+            'rejected' => (clone $statsQuery)->where('status', AttendanceStatus::REJECTED)->count(),
+        ];
+
         $records = $query->latest('updated_at')->paginate(20);
 
         $departments = collect();
@@ -64,7 +79,7 @@ class HistoryController extends Controller
             $departments = Department::active()->orderBy('name')->get();
         }
 
-        return view('attendance.history', compact('records', 'departments'));
+        return view('attendance.history', compact('records', 'departments', 'stats'));
     }
 
     public function show(WeeklyAttendance $attendance)
