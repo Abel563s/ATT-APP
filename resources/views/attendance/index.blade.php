@@ -58,8 +58,8 @@
                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                             <i data-lucide="calendar" class="h-4 w-4 text-slate-400 group-focus-within:text-[#00ADC5] transition-colors"></i>
                         </div>
-                        <input type="date" name="week" value="{{ $weekStart }}" 
-                               onchange="this.form.submit()"
+                        <input type="date" name="week" id="week-picker" value="{{ $weekStart }}" 
+                               onchange="validateMonday(this)"
                                class="block w-full pl-10 pr-4 py-2 bg-slate-50 border-none rounded-xl text-slate-700 text-sm font-bold focus:ring-2 focus:ring-[#00ADC5]/20 transition-all cursor-pointer">
                     </div>
                 </form>
@@ -244,6 +244,21 @@
 
         function hideModal() {
             document.getElementById('submitModal').classList.add('hidden');
+        }
+
+        function validateMonday(input) {
+            const date = new Date(input.value);
+            const day = date.getDay(); // 0 is Sunday, 1 is Monday
+            
+            if (day !== 1) {
+                alert('Please select a Monday.');
+                // Find the nearest Monday
+                const diff = date.getDate() - day + (day === 0 ? -6 : 1);
+                date.setDate(diff);
+                input.value = date.toISOString().split('T')[0];
+                return;
+            }
+            input.form.submit();
         }
 
         async function saveAndSubmit() {

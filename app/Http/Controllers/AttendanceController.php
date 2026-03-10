@@ -46,7 +46,8 @@ class AttendanceController extends Controller
         }
 
         $weekStart = $request->get('week', Carbon::now()->startOfWeek(Carbon::MONDAY)->toDateString());
-        $weekStartDate = Carbon::parse($weekStart);
+        $weekStartDate = Carbon::parse($weekStart)->startOfWeek(Carbon::MONDAY);
+        $weekStart = $weekStartDate->toDateString();
 
         // Find existing attendance or create new one
         $attendance = WeeklyAttendance::where('department_id', $department->id)

@@ -11,9 +11,11 @@ use Illuminate\Support\Facades\Auth;
 
 class ApprovalController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $user = Auth::user();
+        $status = $request->get('status');
+        $departmentId = $request->get('department_id');
 
         // Managers see PENDING attendances for departments they manage
         // Admin sees PENDING_ADMIN (manager-approved) attendances
@@ -22,14 +24,25 @@ class ApprovalController extends Controller
         if ($user->isAdmin()) {
             // Admin sees both records pending manager approval and records pending admin approval
             $query->whereIn('status', [AttendanceStatus::PENDING, AttendanceStatus::PENDING_ADMIN]);
+
+            if ($status) {
+                $query->where('status', $status);
+            }
+            if ($departmentId) {
+                $query->where('department_id', $departmentId);
+            }
         } else {
             // Managers see records pending manager approval
             $managedDeptIds = $user->getResponsibleDepartmentIds();
             $query->where('status', AttendanceStatus::PENDING)
                 ->whereIn('department_id', $managedDeptIds);
+
+            if ($status) {
+                $query->where('status', $status);
+            }
         }
 
-        $pendingAttendances = $query->orderBy('week_start_date', 'desc')->get();
+        $pendingAttendances = $query->orderBy('week_start_date', 'desc')->paginate(15);
 
         $awaitingManagerCount = 0;
         $awaitingAdminCount = 0;
@@ -39,10 +52,12 @@ class ApprovalController extends Controller
             $awaitingAdminCount = WeeklyAttendance::where('status', AttendanceStatus::PENDING_ADMIN)->count();
         }
 
-        // Debug: Log what we're getting
-        \Log::info('Approval Index - User: ' . $user->id . ', Role: ' . $user->role . ', Pending Count: ' . $pendingAttendances->count());
+        $departments = \App\Models\Department::all();
 
-        return view('manager.approvals.index', compact('pendingAttendances', 'awaitingManagerCount', 'awaitingAdminCount'));
+        // Debug: Log what we're getting
+        \Log::info('Approval Index - User: ' . $user->id . ', Role: ' . $user->role . ', Pending Count: ' . $pendingAttendances->total());
+
+        return view('manager.approvals.index', compact('pendingAttendances', 'awaitingManagerCount', 'awaitingAdminCount', 'departments'));
     }
 
     public function show(WeeklyAttendance $attendance)

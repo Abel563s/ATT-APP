@@ -75,7 +75,8 @@
                     <span class="text-[10px] font-black text-white/60 uppercase tracking-widest block mb-2">Workforce
                         Sync</span>
                     <h3 class="text-2xl font-black tracking-tight mb-1">{{ $intelligence['active_workers'] }} /
-                        {{ $intelligence['total_workers'] }}</h3>
+                        {{ $intelligence['total_workers'] }}
+                    </h3>
                     <p class="text-sm font-medium text-white/80">Active Personnel Operational</p>
                 </div>
                 <div class="absolute -right-8 -bottom-8 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
@@ -154,7 +155,7 @@
                                             </div>
                                         </td>
                                         <td class="px-10 py-6 text-sm font-bold text-slate-500">
-                                            {{ number_format($stats['total']) }} Nodes
+                                            {{ number_format($stats['total']) }} EMP
                                         </td>
                                         <td class="px-10 py-6">
                                             <div class="flex items-center gap-4">

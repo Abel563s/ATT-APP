@@ -123,7 +123,7 @@
                         <a href="{{ route('admin.attendance.history.export.pdf', request()->all()) }}"
                             class="px-5 py-2 bg-rose-500 rounded-xl text-xs font-black text-white hover:bg-rose-600 transition-all flex items-center justify-center gap-2 shadow-lg shadow-rose-100 border border-rose-600/10"
                             title="Export PDF">
-                            <i data-lucide="file-text" class="w-4 h-4"></i>
+                            <i data-lucide="file-down" class="w-4 h-4"></i>
                             PDF
                         </a>
                     </div>
