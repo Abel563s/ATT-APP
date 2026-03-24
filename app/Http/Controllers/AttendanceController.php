@@ -78,8 +78,9 @@ class AttendanceController extends Controller
             );
         }
 
-        // Check if the current user is restricted from editing (Manager but not Admin)
-        $isManagerReadOnly = ($user->isManager() && !$user->isAdmin());
+        // Check if the current user is restricted from editing
+        // Managers and Admins are now authorized to edit attendance records.
+        $isManagerReadOnly = false;
 
         $employees = Employee::active()
             ->where('department_id', $department->id)
@@ -121,11 +122,6 @@ class AttendanceController extends Controller
             return redirect()->back()->with('error', 'This attendance record is locked.');
         }
 
-        // Prevent Managers (who are not Admins) from saving
-        $user = Auth::user();
-        if ($user->isManager() && !$user->isAdmin()) {
-            return redirect()->back()->with('error', 'Managers are not authorized to edit attendance records.');
-        }
         // Managers are now authorized to edit attendance records.
         // The previous restriction for Managers (who are not Admins) has been removed.
 
@@ -140,6 +136,9 @@ class AttendanceController extends Controller
                     $days
                 );
             }
+
+            // Always set status back to Draft when saving, especially if it was Rejected
+            $attendance->update(['status' => AttendanceStatus::DRAFT]);
 
             DB::commit();
             return redirect()->back()->with('success', 'Attendance saved as draft.');

@@ -247,16 +247,25 @@
         }
 
         function validateMonday(input) {
-            const date = new Date(input.value);
-            const day = date.getDay(); // 0 is Sunday, 1 is Monday
+            if (!input.value) return;
             
-            if (day !== 1) {
-                alert('Please select a Monday.');
-                // Find the nearest Monday
-                const diff = date.getDate() - day + (day === 0 ? -6 : 1);
-                date.setDate(diff);
-                input.value = date.toISOString().split('T')[0];
-                return;
+            // Parse as YYYY-MM-DD manually to avoid timezone shifts
+            const [year, month, day] = input.value.split('-').map(Number);
+            const date = new Date(year, month - 1, day);
+            const dayOfWeek = date.getDay(); // 0 is Sunday, 1 is Monday
+            
+            if (dayOfWeek !== 1) {
+                // Find the nearest Monday (going backwards if not Monday)
+                const diff = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+                date.setDate(date.getDate() + diff);
+                
+                // Format back to YYYY-MM-DD
+                const y = date.getFullYear();
+                const m = String(date.getMonth() + 1).padStart(2, '0');
+                const d = String(date.getDate()).padStart(2, '0');
+                input.value = `${y}-${m}-${d}`;
+                
+                // Optional: alert('Data has been adjusted to the nearest Monday.');
             }
             input.form.submit();
         }

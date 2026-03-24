@@ -87,6 +87,7 @@ class EmployeeController extends Controller
         $request->validate([
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
             'department_id' => 'required|exists:departments,id',
             'role' => 'required|in:admin,manager,user,department_attendance_user',
             'site' => 'nullable|string|max:255',
@@ -108,7 +109,7 @@ class EmployeeController extends Controller
             // Create user account
             $user = User::create([
                 'name' => $request->first_name . ' ' . $request->last_name,
-                'email' => null, // Email to be added later on users page
+                'email' => $request->email,
                 'password' => Hash::make('password'),
                 'role' => $request->role,
                 'department_id' => $request->department_id,
@@ -123,7 +124,7 @@ class EmployeeController extends Controller
                 'employee_id' => $generatedId,
                 'first_name' => $request->first_name,
                 'last_name' => $request->last_name,
-                'email' => null, // Email to be added later
+                'email' => $request->email,
                 'site' => $request->site,
                 'position' => $request->position,
                 'date_of_joining' => now(),
@@ -183,6 +184,7 @@ class EmployeeController extends Controller
         $request->validate([
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,' . $employee->user_id,
             'department_id' => 'required|exists:departments,id',
             'role' => 'required|in:admin,manager,user,department_attendance_user',
             'status' => 'required|in:active,inactive,terminated',
@@ -195,6 +197,7 @@ class EmployeeController extends Controller
             // Update user account
             $employee->user->update([
                 'name' => $request->first_name . ' ' . $request->last_name,
+                'email' => $request->email,
                 'role' => $request->role,
                 'department_id' => $request->department_id,
                 'is_active' => $request->status === 'active',
@@ -205,6 +208,7 @@ class EmployeeController extends Controller
                 'department_id' => $request->department_id,
                 'first_name' => $request->first_name,
                 'last_name' => $request->last_name,
+                'email' => $request->email,
                 'site' => $request->site,
                 'position' => $request->position,
                 'status' => $request->status,
