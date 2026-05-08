@@ -88,7 +88,7 @@
                                                     title="Reconfigure">
                                                     <i data-lucide="pencil" class="w-4 h-4"></i>
                                                 </button>
-                                                <form action="{{ route('admin.settings.destroy-code', $code->id) }}" method="POST" class="inline-block" onsubmit="return confirm('Are you sure you want to remove this core identifier?');">
+                                                <form action="{{ route('admin.settings.destroy_code', $code->id) }}" method="POST" class="inline-block" onsubmit="return confirm('Are you sure you want to remove this core identifier?');">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit"
@@ -220,7 +220,7 @@
             <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
             <div
                 class="inline-block align-middle bg-white rounded-[3rem] text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full border border-white/20 relative z-[110]">
-                <form id="createCodeForm" method="POST" action="{{ route('admin.settings.store-code') }}">
+                <form id="createCodeForm" method="POST" action="{{ route('admin.settings.store_code') }}">
                     @csrf
 
                     <div class="bg-white px-10 pt-12 pb-8">
