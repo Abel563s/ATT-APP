@@ -61,7 +61,9 @@ Route::middleware(['auth'])->group(function () {
         // System Settings & Core Identifiers
         Route::get('/settings', [App\Http\Controllers\Admin\SystemSettingController::class, 'index'])->name('settings.index');
         Route::post('/settings', [App\Http\Controllers\Admin\SystemSettingController::class, 'updateSetting'])->name('settings.update');
+        Route::post('/settings/codes', [App\Http\Controllers\Admin\SystemSettingController::class, 'storeCode'])->name('settings.store-code');
         Route::put('/settings/codes/{code}', [App\Http\Controllers\Admin\SystemSettingController::class, 'updateCode'])->name('settings.update-code');
+        Route::delete('/settings/codes/{code}', [App\Http\Controllers\Admin\SystemSettingController::class, 'destroyCode'])->name('settings.destroy-code');
 
         Route::post('/employees/{employee}/activate', [AdminEmployeeController::class, 'activate'])->name('employees.activate');
         Route::post('/employees/{employee}/terminate', [AdminEmployeeController::class, 'terminate'])->name('employees.terminate');

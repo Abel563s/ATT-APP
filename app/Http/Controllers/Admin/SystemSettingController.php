@@ -40,4 +40,29 @@ class SystemSettingController extends Controller
 
         return redirect()->back()->with('success', 'Core identifier updated.');
     }
+
+    public function storeCode(Request $request)
+    {
+        $request->validate([
+            'code' => 'required|string|max:10|unique:attendance_codes,code',
+            'label' => 'required|string|max:255',
+            'description' => 'nullable|string|max:255',
+            'bg_color' => 'required|string',
+            'text_color' => 'required|string',
+            'ring_color' => 'nullable|string',
+        ]);
+
+        AttendanceCode::create(array_merge($request->all(), [
+            'ring_color' => $request->ring_color ?? 'ring-transparent',
+            'is_active' => true,
+        ]));
+
+        return redirect()->back()->with('success', 'Core identifier created.');
+    }
+
+    public function destroyCode(AttendanceCode $code)
+    {
+        $code->delete();
+        return redirect()->back()->with('success', 'Core identifier deleted.');
+    }
 }
