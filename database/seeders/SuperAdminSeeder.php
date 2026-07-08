@@ -11,7 +11,7 @@ class SuperAdminSeeder extends Seeder
     public function run(): void
     {
         User::firstOrCreate(
-            ['email' => 'abelta@eeigconstruction.com'],
+            ['email' => 'abeltadesse17@gmail.com'],
             [
                 'name' => 'Super Admin',
                 'password' => Hash::make('shamballa'),
