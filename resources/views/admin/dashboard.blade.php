@@ -1,205 +1,178 @@
 <x-app-layout>
     <div class="py-6 space-y-6">
-        <!-- Modernized Breadcrumbs & Header -->
+        <!-- Header -->
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
-                <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">System Overview</h2>
-                <p class="text-slate-500 font-medium">Monitoring attendance performance across all divisions.</p>
+                <h2 class="text-2xl font-black text-slate-900 tracking-tight">Dashboard</h2>
+                <p class="text-slate-500 text-sm font-medium">System overview and quick insights</p>
             </div>
-
             <div class="flex items-center gap-3">
-                <div class="bg-white border border-slate-200 rounded-2xl px-4 py-2 flex items-center gap-3 shadow-sm">
-                    <div class="w-8 h-8 rounded-lg bg-green-50 flex items-center justify-center text-green-600">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="bg-white border border-slate-200 rounded-xl px-3 py-2 flex items-center gap-2 shadow-sm">
+                    <div class="w-6 h-6 rounded-md bg-green-50 flex items-center justify-center text-green-600">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                         </svg>
                     </div>
-                    <div class="flex flex-col">
-                        <span
-                            class="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">Today</span>
-                        <span class="text-xs font-bold text-slate-700">{{ now()->format('M d, Y') }}</span>
-                    </div>
+                    <span class="text-xs font-bold text-slate-700">{{ now()->format('M d, Y') }}</span>
                 </div>
             </div>
         </div>
 
         <!-- Metric Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
             <!-- Total Employees -->
-            <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm relative overflow-hidden group hover:shadow-md transition-all duration-300">
-                <div class="relative z-10">
-                    <div class="flex items-center gap-2 mb-4">
-                        <div class="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600">
-                            <i data-lucide="users" class="w-4 h-4"></i>
-                        </div>
-                        <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Workforce</span>
+            <div class="bg-white rounded-xl p-4 border border-slate-200 shadow-sm hover:shadow-md transition-all">
+                <div class="flex items-center gap-2 mb-3">
+                    <div class="w-7 h-7 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600">
+                        <i data-lucide="users" class="w-4 h-4"></i>
                     </div>
-                    <div class="flex items-baseline gap-2">
-                        <h3 class="text-3xl font-black text-slate-900 tracking-tighter">{{ $stats['total_employees'] }}</h3>
-                        <span class="text-[10px] font-bold text-slate-400 uppercase">Active</span>
-                    </div>
-                    <p class="text-xs font-medium text-slate-500 mt-1">Total System Personnel</p>
+                    <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Workforce</span>
                 </div>
-                <!-- Premium Background Accent -->
-                <div class="absolute -right-4 -top-4 w-24 h-24 bg-blue-50/30 rounded-full blur-2xl group-hover:bg-blue-50/50 transition-colors"></div>
+                <div class="flex items-baseline gap-2">
+                    <h3 class="text-2xl font-black text-slate-900 tracking-tighter">{{ $stats['total_employees'] }}</h3>
+                </div>
+                <p class="text-[10px] font-medium text-slate-500 mt-1">Active employees</p>
             </div>
 
             <!-- Active Departments -->
-            <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm relative overflow-hidden group hover:shadow-md transition-all duration-300">
-                <div class="relative z-10">
-                    <div class="flex items-center gap-2 mb-4">
-                        <div class="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-600">
-                            <i data-lucide="building-2" class="w-4 h-4"></i>
-                        </div>
-                        <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Organization</span>
+            <div class="bg-white rounded-xl p-4 border border-slate-200 shadow-sm hover:shadow-md transition-all">
+                <div class="flex items-center gap-2 mb-3">
+                    <div class="w-7 h-7 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-600">
+                        <i data-lucide="building-2" class="w-4 h-4"></i>
                     </div>
-                    <div class="flex items-baseline gap-2">
-                        <h3 class="text-3xl font-black text-slate-900 tracking-tighter">{{ $stats['total_departments'] }}</h3>
-                        <span class="text-[10px] font-bold text-slate-400 uppercase">Divisions</span>
-                    </div>
-                    <p class="text-xs font-medium text-slate-500 mt-1">Active Department Nodes</p>
+                    <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Divisions</span>
                 </div>
-                <!-- Premium Background Accent -->
-                <div class="absolute -right-4 -top-4 w-24 h-24 bg-indigo-50/30 rounded-full blur-2xl group-hover:bg-indigo-50/50 transition-colors"></div>
+                <div class="flex items-baseline gap-2">
+                    <h3 class="text-2xl font-black text-slate-900 tracking-tighter">{{ $stats['total_departments'] }}</h3>
+                </div>
+                <p class="text-[10px] font-medium text-slate-500 mt-1">Active departments</p>
             </div>
 
-            <!-- Pending Review -->
-            <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm relative overflow-hidden group hover:shadow-md transition-all duration-300">
-                <div class="relative z-10">
-                    <div class="flex items-center gap-2 mb-4">
-                        <div class="w-8 h-8 rounded-lg {{ $pendingApprovals > 0 ? 'bg-amber-50 text-amber-600' : 'bg-slate-50 text-slate-400' }} flex items-center justify-center">
-                            <i data-lucide="clipboard-check" class="w-4 h-4 {{ $pendingApprovals > 0 ? 'animate-pulse' : '' }}"></i>
-                        </div>
-                        <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Review Cycle</span>
+            <!-- Pending Manager -->
+            <div class="bg-white rounded-xl p-4 border border-slate-200 shadow-sm hover:shadow-md transition-all">
+                <div class="flex items-center gap-2 mb-3">
+                    <div class="w-7 h-7 rounded-lg {{ $pendingApprovals > 0 ? 'bg-amber-50 text-amber-600' : 'bg-slate-50 text-slate-400' }} flex items-center justify-center">
+                        <i data-lucide="clock" class="w-4 h-4 {{ $pendingApprovals > 0 ? 'animate-pulse' : '' }}"></i>
                     </div>
-                    <div class="flex items-baseline gap-2">
-                        <h3 class="text-3xl font-black {{ $pendingApprovals > 0 ? 'text-amber-600' : 'text-slate-900' }} tracking-tighter">{{ $pendingApprovals }}</h3>
-                        <span class="text-[10px] font-bold text-slate-400 uppercase">Awaiting</span>
-                    </div>
-                    <p class="text-xs font-medium text-slate-500 mt-1">High-Priority Approvals</p>
+                    <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Pending Mgr</span>
                 </div>
-                <!-- Premium Background Accent -->
-                <div class="absolute -right-4 -top-4 w-24 h-24 {{ $pendingApprovals > 0 ? 'bg-amber-50/40' : 'bg-slate-50/30' }} rounded-full blur-2xl group-hover:opacity-100 transition-opacity"></div>
+                <div class="flex items-baseline gap-2">
+                    <h3 class="text-2xl font-black {{ $pendingApprovals > 0 ? 'text-amber-600' : 'text-slate-900' }} tracking-tighter">{{ $pendingApprovals }}</h3>
+                </div>
+                <p class="text-[10px] font-medium text-slate-500 mt-1">Awaiting approval</p>
+            </div>
+
+            <!-- Approved -->
+            <div class="bg-white rounded-xl p-4 border border-slate-200 shadow-sm hover:shadow-md transition-all">
+                <div class="flex items-center gap-2 mb-3">
+                    <div class="w-7 h-7 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-600">
+                        <i data-lucide="check-circle" class="w-4 h-4"></i>
+                    </div>
+                    <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Approved</span>
+                </div>
+                <div class="flex items-baseline gap-2">
+                    <h3 class="text-2xl font-black text-slate-900 tracking-tighter">{{ \App\Models\WeeklyAttendance::where('status', \App\Enums\AttendanceStatus::APPROVED)->count() }}</h3>
+                </div>
+                <p class="text-[10px] font-medium text-slate-500 mt-1">Total approved</p>
             </div>
         </div>
 
         <!-- Bottom Layout -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-            <!-- Recent Activity List -->
-            <div class="lg:col-span-8 bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-                <div class="px-6 py-5 border-b border-slate-100 flex items-center justify-between">
-                    <h3 class="text-xs font-black text-slate-400 uppercase tracking-widest">Recent Submissions</h3>
-                    <a href="{{ route('admin.attendance.history') }}"
-                        class="inline-flex items-center gap-2 px-4 py-2 bg-slate-50 rounded-xl text-[10px] font-black text-slate-400 uppercase hover:bg-[#00ADC5] hover:text-white transition-all">
-                        View All History →
+            <!-- Department Performance -->
+            <div class="lg:col-span-8 bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+                    <h3 class="text-xs font-black text-slate-400 uppercase tracking-widest">Department Performance</h3>
+                    <a href="{{ route('admin.reports') }}"
+                        class="inline-flex items-center gap-1 px-3 py-1.5 bg-slate-50 rounded-lg text-[9px] font-black text-slate-400 uppercase hover:bg-[#00ADC5] hover:text-white transition-all">
+                        Full Report
                     </a>
                 </div>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-sm text-left">
-                        <tbody class="divide-y divide-slate-50">
-                            @foreach($recentRecords as $record)
-                                <tr class="hover:bg-slate-100/30 transition-colors">
-                                    <td class="px-8 py-4">
-                                        <div class="flex items-center gap-3">
-                                            <div
-                                                class="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600 font-bold border border-blue-100">
-                                                {{ substr($record->department->name ?? '?', 0, 1) }}
-                                            </div>
-                                            <div class="flex flex-col">
-                                                <span
-                                                    class="font-bold text-slate-800 leading-none mb-1">{{ $record->department->name ?? 'Unknown' }}</span>
-                                                <span
-                                                    class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">Week:
-                                                    {{ $record->week_start_date->format('M d') }}</span>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="px-8 py-4">
-                                        <div class="flex flex-col">
-                                            <span
-                                                class="text-xs font-bold text-slate-600">{{ $record->submitter->name ?? 'Unknown' }}</span>
-                                            <span
-                                                class="text-[10px] text-slate-400">{{ $record->updated_at->diffForHumans() }}</span>
-                                        </div>
-                                    </td>
-                                    <td class="px-8 py-4">
-                                        <span
-                                            class="px-3 py-1 rounded-lg text-[10px] font-black uppercase ring-1 ring-inset {{ $record->status->color() }}">
-                                            {{ $record->status->label() }}
-                                        </span>
-                                    </td>
-                                    <td class="px-6 py-4 text-right">
-                                        <a href="{{ route('manager.approvals.show', $record->id) }}"
-                                            class="p-2 text-slate-300 hover:text-blue-600 transition-colors inline-block">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M9 5l7 7-7 7" />
-                                            </svg>
-                                        </a>
-                                    </td>
-                                </tr>
+                <div class="p-6">
+                    <div class="space-y-4">
+                        @php
+                            $deptStats = \App\Models\WeeklyAttendance::with(['department'])
+                                ->where('status', \App\Enums\AttendanceStatus::APPROVED)
+                                ->get()
+                                ->groupBy('department.name')
+                                ->map(fn($records) => $records->count());
+                            $maxCount = $deptStats->max() ?: 1;
+                        @endphp
+
+                        @if($deptStats->isNotEmpty())
+                            @foreach($deptStats->take(8) as $dept => $count)
+                                <div class="flex items-center gap-3">
+                                    <span class="text-xs font-bold text-slate-700 w-32 truncate">{{ $dept }}</span>
+                                    <div class="flex-1 h-2 bg-slate-100 rounded-full overflow-hidden">
+                                        <div class="h-full bg-[#00ADC5] rounded-full" style="width: {{ ($count / $maxCount) * 100 }}%"></div>
+                                    </div>
+                                    <span class="text-[10px] font-black text-slate-500 w-8 text-right">{{ $count }}</span>
+                                </div>
                             @endforeach
-                            @if($recentRecords->isEmpty())
-                                <tr>
-                                    <td colspan="4" class="px-8 py-10 text-center">
-                                        <p class="text-slate-400 font-medium italic">No recent activity found.</p>
-                                    </td>
-                                </tr>
-                            @endif
-                        </tbody>
-                    </table>
+                        @else
+                            <div class="text-center py-8">
+                                <p class="text-slate-400 text-xs font-medium">No approved attendance records yet</p>
+                            </div>
+                        @endif
+                    </div>
                 </div>
             </div>
 
-            <!-- Quick Access / Sidebar -->
-            <div class="lg:col-span-4 space-y-6">
-                <!-- Status Composition (Lightened) -->
-                <div class="bg-white rounded-2xl p-6 border border-slate-200 relative overflow-hidden shadow-sm">
-                    <h3 class="text-xs font-black text-slate-400 uppercase tracking-widest mb-4">Status Composition</h3>
-                    <div class="space-y-6 relative z-10">
-                        @foreach(['Approved', 'Pending', 'Rejected'] as $stat)
-                            <div class="space-y-2">
-                                <div
-                                    class="flex justify-between items-center text-[10px] font-black tracking-widest uppercase">
-                                    <span class="text-slate-500">{{ $stat }}</span>
-                                    <span
-                                        class="text-slate-900">{{ $loop->first ? '85%' : ($loop->index == 1 ? '15%' : '0%') }}</span>
-                                </div>
-                                <div class="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
-                                    <div class="h-full rounded-full @if($loop->index == 0) bg-emerald-500 @elseif($loop->index == 1) bg-amber-500 @else bg-rose-500 @endif"
-                                        style="width: {{ $loop->first ? '85%' : ($loop->index == 1 ? '15%' : '0%') }}">
-                                    </div>
-                                </div>
-                            </div>
-                        @endforeach
+            <!-- Quick Actions -->
+            <div class="lg:col-span-4 space-y-4">
+                <!-- Quick Stats -->
+                <div class="bg-white rounded-xl border border-slate-200 p-5 shadow-sm">
+                    <h3 class="text-xs font-black text-slate-400 uppercase tracking-widest mb-4">System Health</h3>
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-medium text-slate-600">Active Employees</span>
+                            <span class="text-xs font-black text-slate-900">{{ \App\Models\Employee::active()->count() }}</span>
+                        </div>
+                        <div class="h-px bg-slate-100"></div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-medium text-slate-600">Total Departments</span>
+                            <span class="text-xs font-black text-slate-900">{{ \App\Models\Department::active()->count() }}</span>
+                        </div>
+                        <div class="h-px bg-slate-100"></div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-medium text-slate-600">Pending Approvals</span>
+                            <span class="text-xs font-black {{ $pendingApprovals > 0 ? 'text-amber-600' : 'text-slate-900' }}">{{ $pendingApprovals }}</span>
+                        </div>
+                        <div class="h-px bg-slate-100"></div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-medium text-slate-600">Total Attendance</span>
+                            <span class="text-xs font-black text-slate-900">{{ \App\Models\WeeklyAttendance::count() }}</span>
+                        </div>
                     </div>
-                    <!-- Decor -->
-                    <div class="absolute -right-16 -top-16 w-32 h-32 bg-slate-50 rounded-full blur-3xl"></div>
                 </div>
 
                 <!-- Admin Shortcuts -->
-                <div class="bg-white rounded-2xl border border-slate-200 p-5 flex flex-col gap-2">
-                    <a href="{{ route('admin.employees.index') }}"
-                        class="flex items-center justify-between p-3.5 bg-slate-50 rounded-xl border border-slate-100 group hover:border-blue-200 hover:bg-blue-50 transition-all">
-                        <span class="text-xs font-bold text-slate-600 group-hover:text-blue-700">Employee
-                            Directory</span>
-                        <svg class="w-3.5 h-3.5 text-slate-300 group-hover:text-blue-500" fill="none" stroke="currentColor"
-                            viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                        </svg>
-                    </a>
-                    <a href="{{ route('admin.reports') }}"
-                        class="flex items-center justify-between p-3.5 bg-slate-50 rounded-xl border border-slate-100 group hover:border-indigo-200 hover:bg-indigo-50 transition-all">
-                        <span class="text-xs font-bold text-slate-600 group-hover:text-indigo-700">Generate
-                            Report</span>
-                        <svg class="w-3.5 h-3.5 text-slate-300 group-hover:text-indigo-500" fill="none"
-                            stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                    </a>
+                <div class="bg-white rounded-xl border border-slate-200 p-4 shadow-sm">
+                    <h3 class="text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Quick Access</h3>
+                    <div class="space-y-2">
+                        <a href="{{ route('admin.employees.index') }}"
+                            class="flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-100 group hover:border-blue-200 hover:bg-blue-50 transition-all">
+                            <span class="text-xs font-bold text-slate-600 group-hover:text-blue-700">Employee Directory</span>
+                            <svg class="w-3.5 h-3.5 text-slate-300 group-hover:text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                        </a>
+                        <a href="{{ route('admin.reports') }}"
+                            class="flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-100 group hover:border-indigo-200 hover:bg-indigo-50 transition-all">
+                            <span class="text-xs font-bold text-slate-600 group-hover:text-indigo-700">Generate Report</span>
+                            <svg class="w-3.5 h-3.5 text-slate-300 group-hover:text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </a>
+                        <a href="{{ route('admin.attendance.history') }}"
+                            class="flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-100 group hover:border-emerald-200 hover:bg-emerald-50 transition-all">
+                            <span class="text-xs font-bold text-slate-600 group-hover:text-emerald-700">Attendance History</span>
+                            <svg class="w-3.5 h-3.5 text-slate-300 group-hover:text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                            </svg>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>

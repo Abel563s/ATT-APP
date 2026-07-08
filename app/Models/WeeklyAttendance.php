@@ -22,6 +22,7 @@ class WeeklyAttendance extends Model
         'submitted_by',
         'approved_by',
         'rejection_reason',
+        'created_at',
     ];
 
     protected $casts = [

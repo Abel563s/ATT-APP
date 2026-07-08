@@ -41,13 +41,8 @@ class DashboardController extends Controller
                 'total_departments' => $totalDepartments,
                 'pending_approvals' => $pendingApprovals,
             ],
-            'departmentStats' => [],
             'recentRecords' => $recentRecords,
             'pendingApprovals' => $pendingApprovals,
-            'skipDetection' => [],
-            'monthlyTrend' => [],
-            'startDate' => now(),
-            'endDate' => now(),
         ]);
     }
 
