@@ -27,6 +27,10 @@ class AttendanceController extends Controller
     {
         $user = Auth::user();
 
+        if (!$user->isAdmin() && !$user->isSuperAdmin() && !$user->isManager() && !$user->isUser() && !$user->isDepartmentAttendanceUser()) {
+            abort(403, 'Unauthorized.');
+        }
+
         // Resolve Department: Allow admins to browse any department, others restricted to their context
         $deptId = $request->get('dept_id');
         $department = null;

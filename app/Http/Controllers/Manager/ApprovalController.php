@@ -14,6 +14,10 @@ class ApprovalController extends Controller
     public function index(Request $request)
     {
         $user = Auth::user();
+
+        if (!$user->isAdmin() && !$user->isSuperAdmin() && !$user->isManager()) {
+            abort(403, 'Unauthorized.');
+        }
         $status = $request->get('status');
         $departmentId = $request->get('department_id');
 
@@ -62,6 +66,12 @@ class ApprovalController extends Controller
 
     public function show(WeeklyAttendance $attendance)
     {
+        $user = Auth::user();
+
+        if (!$user->isAdmin() && !$user->isSuperAdmin() && !$user->isManager()) {
+            abort(403, 'Unauthorized.');
+        }
+
         $attendance->load(['department', 'entries.employee', 'submitter', 'logs.user']);
         $codesMap = \App\Models\AttendanceCode::all()->keyBy('code');
 
@@ -71,6 +81,10 @@ class ApprovalController extends Controller
     public function approve(Request $request, WeeklyAttendance $attendance)
     {
         $user = Auth::user();
+
+        if (!$user->isAdmin() && !$user->isSuperAdmin() && !$user->isManager()) {
+            abort(403, 'Unauthorized.');
+        }
 
         if ($user->isAdmin() && !$user->isSuperAdmin() && $attendance->status === AttendanceStatus::PENDING) {
             return redirect()->back()->with('error', 'This record requires manager approval before admin approval.');
@@ -132,6 +146,11 @@ class ApprovalController extends Controller
 
     public function reject(Request $request, WeeklyAttendance $attendance)
     {
+        $user = Auth::user();
+
+        if (!$user->isAdmin() && !$user->isSuperAdmin() && !$user->isManager()) {
+            abort(403, 'Unauthorized.');
+        }
         $request->validate([
             'comment' => 'required|string|max:500',
         ]);

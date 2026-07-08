@@ -173,6 +173,12 @@ class DashboardController extends Controller
 
     public function history(Request $request)
     {
+        $user = Auth::user();
+
+        if (!$user->isAdmin() && !$user->isSuperAdmin()) {
+            abort(403, 'Unauthorized.');
+        }
+
         $records = $this->getHistoryQuery($request)->paginate(20);
         $departments = \App\Models\Department::active()->orderBy('name')->get();
 
@@ -196,6 +202,12 @@ class DashboardController extends Controller
 
     public function exportHistory(Request $request)
     {
+        $user = Auth::user();
+
+        if (!$user->isAdmin() && !$user->isSuperAdmin()) {
+            abort(403, 'Unauthorized.');
+        }
+
         $weeklyRecords = $this->getHistoryQuery($request)->with(['entries.employee', 'department'])->get();
         $entries = collect();
 
@@ -214,6 +226,12 @@ class DashboardController extends Controller
 
     public function exportHistoryPdf(Request $request)
     {
+        $user = Auth::user();
+
+        if (!$user->isAdmin() && !$user->isSuperAdmin()) {
+            abort(403, 'Unauthorized.');
+        }
+
         $weeklyRecords = $this->getHistoryQuery($request)->with(['entries.employee', 'department'])->get();
         $entries = collect();
 
@@ -238,6 +256,11 @@ class DashboardController extends Controller
      */
     public function destroyAttendance(\App\Models\WeeklyAttendance $attendance)
     {
+        $user = Auth::user();
+
+        if (!$user->isAdmin() && !$user->isSuperAdmin()) {
+            abort(403, 'Unauthorized.');
+        }
         try {
             // Force delete (permanent) to avoid unique constraint issues when recreating
             // The cascading deletes will also permanently remove related entries and logs
