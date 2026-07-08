@@ -4,7 +4,7 @@
         <div class="bg-white rounded-[2.5rem] shadow-sm border border-slate-200 overflow-hidden">
             <div class="px-8 py-10 flex flex-col md:flex-row md:items-center justify-between gap-8">
                 <div class="flex items-center gap-6">
-                    <a href="{{ Auth::user()->isAdmin() ? route('admin.attendance.history') : route('attendance.history') }}" 
+                    <a href="{{ (Auth::user()->isAdmin() || Auth::user()->isSuperAdmin()) ? route('admin.attendance.history') : route('attendance.history') }}" 
                        class="w-12 h-12 rounded-xl bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-600 hover:text-slate-900 transition-all group">
                         <i data-lucide="arrow-left" class="w-5 h-5 group-hover:-translate-x-1 transition-transform"></i>
                     </a>

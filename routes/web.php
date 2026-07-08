@@ -31,7 +31,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     // Attendance Routes (Department Reps & Managers)
-    Route::middleware(['role:user|manager|admin'])->prefix('attendance')->name('attendance.')->group(function () {
+    Route::middleware(['role:user|manager|admin|superadmin'])->prefix('attendance')->name('attendance.')->group(function () {
         Route::get('/', [AttendanceController::class, 'index'])->name('index');
         Route::get('/history', [\App\Http\Controllers\HistoryController::class, 'index'])->name('history');
         Route::get('/{attendance}', [\App\Http\Controllers\HistoryController::class, 'show'])->name('show');

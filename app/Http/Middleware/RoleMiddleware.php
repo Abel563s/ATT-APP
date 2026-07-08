@@ -70,6 +70,10 @@ class RoleMiddleware
                     if ($user->isDepartmentAttendanceUser())
                         return true;
                     break;
+                case 'superadmin':
+                    if ($user->isSuperAdmin())
+                        return true;
+                    break;
             }
         }
 
