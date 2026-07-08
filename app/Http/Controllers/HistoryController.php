@@ -114,11 +114,11 @@ class HistoryController extends Controller
         }
 
         $request->validate([
-            'created_at' => ['required', 'date', 'before_or_equal:now'],
+            'created_at' => ['required', 'date_format:Y-m-d\TH:i'],
         ]);
 
         try {
-            $attendance->created_at = \Carbon\Carbon::parse($request->created_at);
+            $attendance->created_at = \Carbon\Carbon::createFromFormat('Y-m-d\TH:i', $request->created_at);
             $attendance->save();
         } catch (\Throwable $e) {
             return redirect()->back()->with('error', 'Invalid date format.')->withInput();
