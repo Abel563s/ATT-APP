@@ -17,7 +17,7 @@
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    @if(Auth::check() && Auth::user()->isAdmin())
+                    @if(Auth::check() && (Auth::user()->isAdmin() || Auth::user()->isSuperAdmin()))
                         <x-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.*')">
                             {{ __('Admin Dashboard') }}
                         </x-nav-link>
@@ -90,7 +90,7 @@
     <!-- Responsive Navigation Menu -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
-            @if(Auth::check() && Auth::user()->isAdmin())
+            @if(Auth::check() && (Auth::user()->isAdmin() || Auth::user()->isSuperAdmin()))
                 <x-responsive-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.*')">
                     {{ __('Admin Dashboard') }}
                 </x-responsive-nav-link>

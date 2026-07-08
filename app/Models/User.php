@@ -134,4 +134,12 @@ class User extends Authenticatable
     {
         return $this->role === 'department_attendance_user';
     }
+
+    /**
+     * Check if user is superadmin.
+     */
+    public function isSuperAdmin(): bool
+    {
+        return $this->role === 'superadmin';
+    }
 }

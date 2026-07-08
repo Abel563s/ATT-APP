@@ -139,7 +139,7 @@
                                         Presence Index</th>
                                     <th
                                         class="px-10 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">
-                                        Synchronization</th>
+                                        Created by</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-slate-100/50">

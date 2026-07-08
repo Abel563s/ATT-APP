@@ -89,7 +89,7 @@ class EmployeeController extends Controller
             'last_name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'department_id' => 'required|exists:departments,id',
-            'role' => 'required|in:admin,manager,user,department_attendance_user',
+            'role' => 'required|in:admin,manager,user,department_attendance_user,superadmin',
             'site' => 'nullable|string|max:255',
             'position' => 'nullable|string|max:255',
         ]);
@@ -134,8 +134,10 @@ class EmployeeController extends Controller
 
             DB::commit();
 
-            // Notify Admins
-            $admins = User::where('role', 'admin')->get();
+            // Notify Admins (exclude superadmin from notifications)
+            $admins = User::where('role', 'admin')
+                ->where('id', '!=', Auth::id())
+                ->get();
             try {
                 if ($admins->isNotEmpty()) {
                     \Illuminate\Support\Facades\Notification::send($admins, new \App\Notifications\NewEmployeeCreated($employee));
@@ -186,7 +188,7 @@ class EmployeeController extends Controller
             'last_name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $employee->user_id,
             'department_id' => 'required|exists:departments,id',
-            'role' => 'required|in:admin,manager,user,department_attendance_user',
+            'role' => 'required|in:admin,manager,user,department_attendance_user,superadmin',
             'status' => 'required|in:active,inactive,terminated',
             'site' => 'nullable|string|max:255',
             'position' => 'nullable|string|max:255',

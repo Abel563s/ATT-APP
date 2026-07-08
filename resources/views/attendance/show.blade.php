@@ -46,16 +46,28 @@
                 </div>
                 <div class="px-10 py-8 border-r border-slate-50">
                     <span
-                        class="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2 block">Synchronization</span>
-                    <span
-                        class="text-sm font-black text-slate-700 block">{{ $attendance->updated_at->format('M d, H:i') }}</span>
+                        class="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2 block">Created on</span>
+                    @if(Auth::user()->isSuperAdmin())
+                        <form action="{{ route('attendance.update-created-at', $attendance->id) }}" method="POST" class="flex items-center gap-2">
+                            @csrf
+                            <input type="datetime-local" name="created_at" value="{{ $attendance->created_at->format('Y-m-d\TH:i') }}"
+                                class="text-sm font-black text-slate-700 bg-white border-2 border-slate-200 rounded-xl px-3 py-1.5 focus:border-[#00ADC5] focus:ring-2 focus:ring-[#00ADC5]/20 outline-none transition-all">
+                            <button type="submit"
+                                class="px-3 py-1.5 bg-[#00ADC5] text-white text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-[#007A8A] transition-all active:scale-95">
+                                Save
+                            </button>
+                        </form>
+                    @else
+                        <span
+                            class="text-sm font-black text-slate-700 block">{{ $attendance->updated_at->format('M d, H:i') }}</span>
+                    @endif
                 </div>
                 <div class="px-10 py-8">
                     <span class="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2 block">Integrity
                         Check</span>
                     <div class="flex items-center gap-2">
                         <div class="w-2 h-2 rounded-full bg-emerald-500 shadow-lg shadow-emerald-200"></div>
-                        <span class="text-sm font-black text-emerald-600 uppercase tracking-tight">Verified Solid</span>
+                        <span class="text-sm font-black text-emerald-600 uppercase tracking-tight">Verified</span>
                     </div>
                 </div>
             </div>

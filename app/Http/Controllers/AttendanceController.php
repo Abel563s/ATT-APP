@@ -31,12 +31,12 @@ class AttendanceController extends Controller
         $deptId = $request->get('dept_id');
         $department = null;
 
-        if ($user->isAdmin() && $deptId) {
+        if (($user->isAdmin() || $user->isSuperAdmin()) && $deptId) {
             $department = \App\Models\Department::find($deptId);
         }
 
         if (!$department) {
-            $department = ($user->isManager() || $user->isAdmin())
+            $department = ($user->isManager() || $user->isAdmin() || $user->isSuperAdmin())
                 ? ($user->managedDepartment ?? $user->department)
                 : $user->department;
         }
@@ -57,7 +57,7 @@ class AttendanceController extends Controller
         // Only create new attendance if none exists
         if (!$attendance) {
             // Managers (who are not admins) cannot create new attendance records
-            if ($user->isManager() && !$user->isAdmin()) {
+            if ($user->isManager() && !$user->isAdmin() && !$user->isSuperAdmin()) {
                 // If it doesn't exist, just create a temporary object for display ensuring it shows as empty/locked
                 // Or better yet, redirect them or show a specific message.
                 // For now, let's allow finding existing, but prevent creation if it doesn't exist? 

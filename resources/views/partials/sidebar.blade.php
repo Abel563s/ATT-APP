@@ -23,39 +23,39 @@
                 ['label' => 'Dashboard', 'icon' => 'layout-dashboard', 'route' => 'dashboard', 'active' => request()->routeIs('dashboard')],
             ];
 
-            // Employees - Admin only
-            if (Auth::check() && Auth::user()->isAdmin()) {
+            // Employees - Admin and SuperAdmin only
+            if (Auth::check() && (Auth::user()->isAdmin() || Auth::user()->isSuperAdmin())) {
                 $menu[] = ['label' => 'Employees', 'icon' => 'users', 'route' => 'admin.employees.index', 'active' => request()->routeIs('admin.employees.*')];
             }
 
-            // Attendance - Non-admin, non-manager users
-            if (Auth::check() && !Auth::user()->isAdmin() && !Auth::user()->isManager()) {
+            // Attendance - Non-admin, non-manager, non-superadmin users
+            if (Auth::check() && !Auth::user()->isAdmin() && !Auth::user()->isManager() && !Auth::user()->isSuperAdmin()) {
                 $menu[] = ['label' => 'Attendance', 'icon' => 'calendar-days', 'route' => 'attendance.index', 'active' => request()->routeIs('attendance.*')];
             }
 
-            // Approvals - Managers and Admins
-            if (Auth::check() && (Auth::user()->isManager() || Auth::user()->isAdmin())) {
+            // Approvals - Managers, Admins and SuperAdmins
+            if (Auth::check() && (Auth::user()->isManager() || Auth::user()->isAdmin() || Auth::user()->isSuperAdmin())) {
                 $menu[] = ['label' => 'Approvals', 'icon' => 'check-circle', 'route' => 'manager.approvals.index', 'active' => request()->routeIs('manager.approvals.*')];
             }
 
             // History - Accessible by All
             if (Auth::check()) {
-                $route = Auth::user()->isAdmin() ? 'admin.attendance.history' : 'attendance.history';
+                $route = (Auth::user()->isAdmin() || Auth::user()->isSuperAdmin()) ? 'admin.attendance.history' : 'attendance.history';
                 $menu[] = ['label' => 'History', 'icon' => 'clock', 'route' => $route, 'active' => request()->routeIs($route)];
             }
 
-            // Reports - Admin only
-            if (Auth::check() && Auth::user()->isAdmin()) {
+            // Reports - Admin and SuperAdmin only
+            if (Auth::check() && (Auth::user()->isAdmin() || Auth::user()->isSuperAdmin())) {
                 $menu[] = ['label' => 'Reports', 'icon' => 'bar-chart-3', 'route' => 'admin.reports', 'active' => request()->routeIs('admin.reports')];
             }
 
-            // Core Identifiers - Admin only
-            if (Auth::check() && Auth::user()->isAdmin()) {
+            // Core Identifiers - Admin and SuperAdmin only
+            if (Auth::check() && (Auth::user()->isAdmin() || Auth::user()->isSuperAdmin())) {
                 $menu[] = ['label' => 'Core Identifiers', 'icon' => 'server', 'route' => 'admin.settings.index', 'active' => request()->routeIs('admin.settings.*')];
             }
 
-            // User Roles - Admin only
-            if (Auth::check() && Auth::user()->isAdmin()) {
+            // User Roles - Admin and SuperAdmin only
+            if (Auth::check() && (Auth::user()->isAdmin() || Auth::user()->isSuperAdmin())) {
                 $menu[] = ['label' => 'User Roles', 'icon' => 'shield-check', 'route' => 'admin.users.index', 'active' => request()->routeIs('admin.users.*')];
             }
 

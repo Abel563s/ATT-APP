@@ -141,7 +141,7 @@
                                         </span>
                                     </td>
                                     <td class="px-8 py-5 text-right">
-                                        @if(Auth::user()->isAdmin())
+                                        @if(Auth::user()->isAdmin() || Auth::user()->isSuperAdmin())
                                             <a href="{{ route('attendance.index', ['week' => $record->week_start_date->toDateString()]) }}"
                                                 class="inline-flex items-center px-4 py-2 bg-slate-50 rounded-xl text-[10px] font-black text-slate-400 uppercase tracking-widest hover:bg-[#00ADC5] hover:text-white transition-all">
                                                 Audit Record →

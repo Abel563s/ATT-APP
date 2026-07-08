@@ -22,7 +22,7 @@
                     </div>
                 </div>
 
-                @if(Auth::user()->isAdmin())
+                @if(Auth::user()->isAdmin() || Auth::user()->isSuperAdmin())
                     <div
                         class="flex items-center bg-amber-50 border border-amber-100 rounded-2xl px-5 py-3 shadow-sm text-amber-900">
                         <div class="flex flex-col">
@@ -70,7 +70,7 @@
                     </select>
                 </div>
 
-                @if(Auth::user()->isAdmin())
+                @if(Auth::user()->isAdmin() || Auth::user()->isSuperAdmin())
                     <div class="space-y-2">
                         <label
                             class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Department</label>

@@ -21,8 +21,8 @@ class ApprovalController extends Controller
         // Admin sees PENDING_ADMIN (manager-approved) attendances
         $query = WeeklyAttendance::with(['department', 'submitter']);
 
-        if ($user->isAdmin()) {
-            // Admin sees both records pending manager approval and records pending admin approval
+        if ($user->isAdmin() || $user->isSuperAdmin()) {
+            // Admin and superadmin see both records pending manager approval and records pending admin approval
             $query->whereIn('status', [AttendanceStatus::PENDING, AttendanceStatus::PENDING_ADMIN]);
 
             if ($status) {
@@ -47,7 +47,7 @@ class ApprovalController extends Controller
         $awaitingManagerCount = 0;
         $awaitingAdminCount = 0;
 
-        if ($user->isAdmin()) {
+        if ($user->isAdmin() || $user->isSuperAdmin()) {
             $awaitingManagerCount = WeeklyAttendance::where('status', AttendanceStatus::PENDING)->count();
             $awaitingAdminCount = WeeklyAttendance::where('status', AttendanceStatus::PENDING_ADMIN)->count();
         }
@@ -72,7 +72,7 @@ class ApprovalController extends Controller
     {
         $user = Auth::user();
 
-        if ($user->isAdmin() && $attendance->status === AttendanceStatus::PENDING) {
+        if ($user->isAdmin() && !$user->isSuperAdmin() && $attendance->status === AttendanceStatus::PENDING) {
             return redirect()->back()->with('error', 'This record requires manager approval before admin approval.');
         }
 
@@ -86,8 +86,7 @@ class ApprovalController extends Controller
         }
 
         // Determine the new status based on user role
-        if ($user->isAdmin()) {
-            // Admin gives final approval (from pending_admin)
+        if ($user->isAdmin() || $user->isSuperAdmin()) {
             $newStatus = AttendanceStatus::APPROVED;
             $message = 'Attendance approved successfully.';
         } else {
@@ -108,7 +107,7 @@ class ApprovalController extends Controller
             ApprovalLog::create([
                 'weekly_attendance_id' => $attendance->id,
                 'user_id' => Auth::id(),
-                'action' => $user->isAdmin() ? 'approved' : 'manager_approved',
+                'action' => $user->isAdmin() || $user->isSuperAdmin() ? 'approved' : 'manager_approved',
                 'comment' => $request->comment,
             ]);
         });

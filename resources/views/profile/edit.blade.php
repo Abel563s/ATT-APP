@@ -50,7 +50,7 @@
                 </div>
 
                 <!-- Danger Zone -->
-                @if(Auth::user()->isAdmin())
+                @if(Auth::user()->isAdmin() || Auth::user()->isSuperAdmin())
                     <div
                         class="bg-rose-50/30 rounded-[2.5rem] p-10 md:p-12 border border-rose-100 shadow-sm relative overflow-hidden group">
                         <div class="max-w-xl relative z-10">

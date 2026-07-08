@@ -22,8 +22,8 @@ class RoleMiddleware
 
         $user = Auth::user();
 
-        // High priority: Admins always have access to everything
-        if ($user->isAdmin()) {
+        // High priority: Admins and SuperAdmins always have access to everything
+        if ($user->isAdmin() || $user->isSuperAdmin()) {
             return $next($request);
         }
 

@@ -28,7 +28,7 @@
                 </div>
 
                 <div class="flex items-center gap-4">
-                    @if(auth()->user()->isAdmin() && $attendance->status === \App\Enums\AttendanceStatus::PENDING)
+                    @if((auth()->user()->isAdmin() || auth()->user()->isSuperAdmin()) && $attendance->status === \App\Enums\AttendanceStatus::PENDING && !auth()->user()->isSuperAdmin())
                         <div class="bg-amber-50 border border-amber-200 rounded-2xl px-6 py-4">
                             <p class="text-[10px] font-black text-amber-600 uppercase tracking-widest leading-none mb-1">Awaiting Manager Approval</p>
                             <p class="text-xs font-bold text-slate-500">Admins can approve after manager review.</p>
@@ -60,14 +60,14 @@
                         Profiles</span>
                 </div>
                 <div class="px-10 py-8 border-r border-slate-50">
-                    <span class="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2 block">Origin
-                        Submitter</span>
+                    <span class="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2 block">Subitted
+                        by</span>
                     <span
                         class="text-sm font-black text-slate-700 truncate block">{{ $attendance->submitter->name ?? 'Unknown' }}</span>
                 </div>
                 <div class="px-10 py-8 border-r border-slate-50">
                     <span
-                        class="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2 block">Synchronization</span>
+                        class="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2 block">Created on</span>
                     <span
                         class="text-sm font-black text-slate-700 block">{{ $attendance->updated_at->format('M d, H:i') }}</span>
                 </div>
@@ -76,7 +76,7 @@
                         Check</span>
                     <div class="flex items-center gap-2">
                         <div class="w-2 h-2 rounded-full bg-emerald-500 shadow-lg shadow-emerald-200"></div>
-                        <span class="text-sm font-black text-emerald-600 uppercase tracking-tight">Verified Solid</span>
+                        <span class="text-sm font-black text-emerald-600 uppercase tracking-tight">Verified</span>
                     </div>
                 </div>
             </div>

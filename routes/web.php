@@ -37,6 +37,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/{attendance}', [\App\Http\Controllers\HistoryController::class, 'show'])->name('show');
         Route::post('/save', [AttendanceController::class, 'store'])->name('save');
         Route::post('/{attendance}/submit', [AttendanceController::class, 'submit'])->name('submit');
+        Route::post('/{attendance}/update-created-at', [\App\Http\Controllers\HistoryController::class, 'updateCreatedAt'])->name('update-created-at');
     });
 
     // Manager Routes (Approvals)

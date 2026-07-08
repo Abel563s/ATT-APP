@@ -17,7 +17,7 @@ class HistoryController extends Controller
         $query = WeeklyAttendance::with(['department', 'submitter']);
 
         // Security: Managers and regular users see restricted data
-        if (!$user->isAdmin()) {
+        if (!$user->isAdmin() && !$user->isSuperAdmin()) {
             if ($user->isManager()) {
                 $managedDeptIds = $user->getResponsibleDepartmentIds();
                 if (empty($managedDeptIds)) {
@@ -35,8 +35,8 @@ class HistoryController extends Controller
 
         // Apply filters
         if ($request->filled('department_id')) {
-            // Admins can filter by any department, managers are already restricted
-            if ($user->isAdmin()) {
+            // Admins and superadmins can filter by any department, managers are already restricted
+            if ($user->isAdmin() || $user->isSuperAdmin()) {
                 $query->where('department_id', $request->department_id);
             }
         }
@@ -75,7 +75,7 @@ class HistoryController extends Controller
         $records = $query->latest('updated_at')->paginate(20);
 
         $departments = collect();
-        if ($user->isAdmin()) {
+        if ($user->isAdmin() || $user->isSuperAdmin()) {
             $departments = Department::active()->orderBy('name')->get();
         }
 
@@ -87,7 +87,7 @@ class HistoryController extends Controller
         $user = Auth::user();
 
         // Security check
-        if (!$user->isAdmin()) {
+        if (!$user->isAdmin() && !$user->isSuperAdmin()) {
             if ($user->isManager()) {
                 if (!in_array($attendance->department_id, $user->getResponsibleDepartmentIds())) {
                     abort(403, 'Unauthorized. This record does not belong to your managed departments.');
@@ -103,5 +103,23 @@ class HistoryController extends Controller
         $codesMap = \App\Models\AttendanceCode::all()->keyBy('code');
 
         return view('attendance.show', compact('attendance', 'codesMap'));
+    }
+
+    public function updateCreatedAt(Request $request, WeeklyAttendance $attendance)
+    {
+        $user = Auth::user();
+
+        if (!$user->isAdmin() && !$user->isSuperAdmin()) {
+            abort(403, 'Unauthorized. Only administrators can modify record timestamps.');
+        }
+
+        $request->validate([
+            'created_at' => ['required', 'date', 'before_or_equal:now'],
+        ]);
+
+        $attendance->created_at = $request->created_at;
+        $attendance->save();
+
+        return redirect()->back()->with('success', 'Record creation timestamp updated successfully.');
     }
 }

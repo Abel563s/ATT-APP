@@ -15,6 +15,9 @@ class UserController extends Controller
     {
         $query = User::with('department');
 
+        // Superadmin accounts are hidden from all admin views
+        $query->where('role', '!=', 'superadmin');
+
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
@@ -39,16 +42,24 @@ class UserController extends Controller
 
     public function edit(User $user)
     {
+        if ($user->isSuperAdmin()) {
+            abort(403, 'Superadmin accounts cannot be modified through this interface.');
+        }
+
         $departments = Department::orderBy('name')->get();
         return view('admin.users.edit', compact('user', 'departments'));
     }
 
     public function update(Request $request, User $user)
     {
+        if ($user->isSuperAdmin()) {
+            abort(403, 'Superadmin accounts cannot be modified through this interface.');
+        }
+
         $rules = [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
-            'role' => ['required', Rule::in(['admin', 'manager', 'user', 'department_attendance_user'])],
+            'role' => ['required', Rule::in(['admin', 'manager', 'user', 'department_attendance_user', 'superadmin'])],
             'department_id' => ['nullable', 'exists:departments,id'],
             'is_active' => ['required', 'boolean'],
             'password' => ['nullable', 'string', 'min:8', 'confirmed'],
@@ -109,6 +120,10 @@ class UserController extends Controller
             return redirect()->back()->with('error', 'You cannot deactivate your own account.');
         }
 
+        if ($user->isSuperAdmin()) {
+            return redirect()->back()->with('error', 'Superadmin accounts cannot be deactivated.');
+        }
+
         $user->is_active = !$user->is_active;
         $user->save();
 
@@ -125,6 +140,10 @@ class UserController extends Controller
     {
         if ($user->id === auth()->id()) {
             return redirect()->back()->with('error', 'You cannot delete your own session.');
+        }
+
+        if ($user->isSuperAdmin()) {
+            return redirect()->back()->with('error', 'Superadmin accounts cannot be deleted.');
         }
 
         // Delete linked employee if exists

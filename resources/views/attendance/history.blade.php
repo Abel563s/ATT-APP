@@ -9,7 +9,7 @@
             <div>
                 <h2 class="text-3xl font-black text-slate-900 tracking-tight">Attendance History</h2>
                 <p class="text-slate-500 font-medium">
-                    @if(Auth::user()->isAdmin())
+                    @if(Auth::user()->isAdmin() || Auth::user()->isSuperAdmin())
                         Complete organizational attendance records
                     @else
                         Attendance records for your managed department
@@ -191,7 +191,7 @@
                                             class="inline-flex items-center px-4 py-2 bg-slate-50 rounded-xl text-[10px] font-black text-slate-400 uppercase hover:bg-[#00ADC5] hover:text-white transition-all">
                                             View Details →
                                         </a>
-                                        @if(Auth::user()->isAdmin())
+                                        @if(Auth::user()->isAdmin() || Auth::user()->isSuperAdmin())
                                             <form action="{{ route('admin.attendance.destroy', $record->id) }}" method="POST"
                                                 onsubmit="return confirm('Are you sure you want to delete this attendance record? This action cannot be undone.');">
                                                 @csrf
