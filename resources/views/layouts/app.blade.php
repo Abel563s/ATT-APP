@@ -62,7 +62,7 @@
             @include('partials.header')
 
             <!-- Content -->
-            <main class="flex-1 overflow-y-auto bg-slate-50 px-8 py-8 custom-scrollbar">
+            <main class="flex-1 overflow-y-auto bg-slate-50 px-6 py-6 custom-scrollbar">
                 <!-- Session Alerts -->
                 @if(session('success'))
                     <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 5000)"

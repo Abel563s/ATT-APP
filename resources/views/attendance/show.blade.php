@@ -62,7 +62,7 @@
                         @endif
                     @else
                         <span
-                            class="text-sm font-black text-slate-700 block">{{ $attendance->updated_at->format('M d, H:i') }}</span>
+                            class="text-sm font-black text-slate-700 block">{{ $attendance->created_at->format('M d, Y H:i') }}</span>
                     @endif
                 </div>
                 <div class="px-10 py-8">

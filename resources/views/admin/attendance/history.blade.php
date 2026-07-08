@@ -1,87 +1,33 @@
 <x-app-layout>
     <div class="py-6 space-y-6">
-        <!-- Header with Back Button -->
-        <div class="flex items-center gap-4">
-            <a href="{{ route('admin.dashboard') }}"
-                class="w-12 h-12 rounded-xl bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-600 hover:text-slate-900 transition-all group">
-                <i data-lucide="arrow-left" class="w-5 h-5 group-hover:-translate-x-1 transition-transform"></i>
-            </a>
+        <!-- Header -->
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
-                <h2 class="text-3xl font-black text-slate-900 tracking-tight">Attendance History</h2>
-                <p class="text-slate-500 font-medium">Complete organizational attendance records</p>
+                <h2 class="text-2xl font-black text-slate-900 tracking-tight">Attendance History</h2>
+                <p class="text-slate-500 text-sm font-medium">Complete organizational attendance records</p>
             </div>
-        </div>
-
-        <!-- Summary Cards -->
-        <div class="flex flex-wrap lg:flex-nowrap gap-3 items-stretch">
-            <div
-                class="flex-1 min-w-[180px] bg-white rounded-2xl p-4 border border-slate-200 shadow-sm flex items-center gap-3 transition-all hover:shadow-md">
-                <div class="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-blue-500 shrink-0">
-                    <i data-lucide="send" class="w-5 h-5"></i>
-                </div>
-                <div class="min-w-0">
-                    <h4 class="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-tight truncate">
-                        Total Submitted</h4>
-                    <p class="text-lg font-black text-slate-900 leading-none mt-1">{{ $stats['total_submitted'] }}</p>
-                </div>
-            </div>
-            <div
-                class="flex-1 min-w-[180px] bg-white rounded-2xl p-4 border border-slate-200 shadow-sm flex items-center gap-3 transition-all hover:shadow-md">
-                <div class="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center text-amber-500 shrink-0">
-                    <i data-lucide="clock" class="w-5 h-5"></i>
-                </div>
-                <div class="min-w-0">
-                    <h4 class="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-tight truncate">
-                        Awaiting Manager</h4>
-                    <p class="text-lg font-black text-slate-900 leading-none mt-1">{{ $stats['pending_manager'] }}</p>
-                </div>
-            </div>
-            <div
-                class="flex-1 min-w-[180px] bg-white rounded-2xl p-4 border border-slate-200 shadow-sm flex items-center gap-3 transition-all hover:shadow-md">
-                <div
-                    class="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-500 shrink-0">
-                    <i data-lucide="shield-check" class="w-5 h-5"></i>
-                </div>
-                <div class="min-w-0">
-                    <h4 class="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-tight truncate">
-                        Awaiting Admin</h4>
-                    <p class="text-lg font-black text-slate-900 leading-none mt-1">{{ $stats['pending_admin'] }}</p>
-                </div>
-            </div>
-            <div
-                class="flex-1 min-w-[180px] bg-white rounded-2xl p-4 border border-slate-200 shadow-sm flex items-center gap-3 transition-all hover:shadow-md">
-                <div
-                    class="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-500 shrink-0">
-                    <i data-lucide="check-circle" class="w-5 h-5"></i>
-                </div>
-                <div class="min-w-0">
-                    <h4 class="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-tight truncate">
-                        Total Approved</h4>
-                    <p class="text-lg font-black text-slate-900 leading-none mt-1">{{ $stats['approved'] }}</p>
-                </div>
-            </div>
-            <div
-                class="flex-1 min-w-[180px] bg-white rounded-2xl p-4 border border-slate-200 shadow-sm flex items-center gap-3 transition-all hover:shadow-md">
-                <div class="w-10 h-10 rounded-xl bg-rose-50 flex items-center justify-center text-rose-500 shrink-0">
-                    <i data-lucide="x-circle" class="w-5 h-5"></i>
-                </div>
-                <div class="min-w-0">
-                    <h4 class="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-tight truncate">
-                        Total Rejected</h4>
-                    <p class="text-lg font-black text-slate-900 leading-none mt-1">{{ $stats['rejected'] }}</p>
-                </div>
+            <div class="flex items-center gap-2">
+                <a href="{{ route('admin.attendance.history.export', request()->all()) }}"
+                    class="px-4 py-2 bg-emerald-500 rounded-xl text-[10px] font-black text-white hover:bg-emerald-600 transition-all flex items-center justify-center gap-2 shadow-lg shadow-emerald-100">
+                    <i data-lucide="file-spreadsheet" class="w-4 h-4"></i>
+                    Excel
+                </a>
+                <a href="{{ route('admin.attendance.history.export.pdf', request()->all()) }}"
+                    class="p-2 bg-indigo-500 hover:bg-indigo-600 rounded-xl text-white transition-all flex items-center justify-center shadow-lg shadow-indigo-100"
+                    title="Export PDF">
+                    <i data-lucide="file-down" class="w-4 h-4"></i>
+                </a>
             </div>
         </div>
 
         <!-- Filters -->
-        <div class="bg-white rounded-3xl shadow-sm border border-slate-200 p-6">
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5">
             <form method="GET" action="{{ route('admin.attendance.history') }}"
-                class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div>
-                    <label
-                        class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Department</label>
+                class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+                <div class="space-y-1.5">
+                    <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-1">Department</label>
                     <select name="department_id"
-                        class="w-full px-4 py-2 bg-slate-50 border-none rounded-xl text-sm font-bold focus:ring-2 focus:ring-[#00ADC5]/20">
+                        class="w-full px-3 py-2.5 bg-slate-50 border-none rounded-xl text-sm font-bold text-slate-700 focus:ring-2 focus:ring-[#00ADC5]/20 appearance-none cursor-pointer">
                         <option value="">All Departments</option>
                         @foreach($departments as $dept)
                             <option value="{{ $dept->id }}" {{ request('department_id') == $dept->id ? 'selected' : '' }}>
@@ -90,11 +36,10 @@
                         @endforeach
                     </select>
                 </div>
-                <div>
-                    <label
-                        class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Status</label>
+                <div class="space-y-1.5">
+                    <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-1">Status</label>
                     <select name="status"
-                        class="w-full px-4 py-2 bg-slate-50 border-none rounded-xl text-sm font-bold focus:ring-2 focus:ring-[#00ADC5]/20">
+                        class="w-full px-3 py-2.5 bg-slate-50 border-none rounded-xl text-sm font-bold text-slate-700 focus:ring-2 focus:ring-[#00ADC5]/20 appearance-none cursor-pointer">
                         <option value="">All Statuses</option>
                         <option value="draft" {{ request('status') == 'draft' ? 'selected' : '' }}>Draft</option>
                         <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
@@ -102,113 +47,128 @@
                         <option value="rejected" {{ request('status') == 'rejected' ? 'selected' : '' }}>Rejected</option>
                     </select>
                 </div>
-                <div>
-                    <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">From
-                        Date</label>
+                <div class="space-y-1.5">
+                    <label class="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-1">From Date</label>
                     <input type="date" name="from_date" value="{{ request('from_date') }}"
-                        class="w-full px-4 py-2 bg-slate-50 border-none rounded-xl text-sm font-bold focus:ring-2 focus:ring-[#00ADC5]/20">
+                        class="w-full px-3 py-2.5 bg-slate-50 border-none rounded-xl text-sm font-bold text-slate-700 focus:ring-2 focus:ring-[#00ADC5]/20">
                 </div>
-                <div class="flex items-end gap-3">
+                <div class="flex gap-2">
                     <button type="submit"
-                        class="flex-1 px-6 py-2 bg-[#00ADC5] rounded-xl text-sm font-black text-white hover:bg-[#007A8A] transition-all shadow-lg shadow-cyan-100">
+                        class="flex-1 py-2.5 bg-[#00ADC5] rounded-xl text-[10px] font-black text-white uppercase tracking-widest hover:bg-[#007A8A] transition-all active:scale-95 shadow-lg shadow-cyan-100">
                         Apply Filters
                     </button>
-                    <div class="flex gap-2">
-                        <a href="{{ route('admin.attendance.history.export', request()->all()) }}"
-                            class="px-5 py-2 bg-emerald-500 rounded-xl text-xs font-black text-white hover:bg-emerald-600 transition-all flex items-center justify-center gap-2 shadow-lg shadow-emerald-100"
-                            title="Export Excel">
-                            <i data-lucide="file-spreadsheet" class="w-4 h-4"></i>
-                            Excel
-                        </a>
-                        <a href="{{ route('admin.attendance.history.export.pdf', request()->all()) }}"
-                            class="p-2.5 bg-indigo-500 hover:bg-indigo-600 rounded-xl text-white transition-all flex items-center justify-center shadow-lg shadow-indigo-100"
-                            title="Export PDF">
-                            <i data-lucide="file-down" class="w-4 h-4"></i>
-                        </a>
-                    </div>
+                    <a href="{{ route('admin.attendance.history') }}"
+                        class="px-3 py-2.5 bg-slate-100 rounded-xl text-slate-400 hover:text-slate-600 transition-colors flex items-center justify-center">
+                        <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+                    </a>
                 </div>
             </form>
         </div>
 
+        <!-- Summary Cards -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600">
+                    <i data-lucide="send" class="w-4 h-4"></i>
+                </div>
+                <div>
+                    <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Submitted</span>
+                    <p class="text-lg font-black text-slate-900 leading-none">{{ $stats['total_submitted'] }}</p>
+                </div>
+            </div>
+            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg bg-amber-50 flex items-center justify-center text-amber-600">
+                    <i data-lucide="clock" class="w-4 h-4"></i>
+                </div>
+                <div>
+                    <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Awaiting Mgr</span>
+                    <p class="text-lg font-black text-slate-900 leading-none">{{ $stats['pending_manager'] }}</p>
+                </div>
+            </div>
+            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-600">
+                    <i data-lucide="shield-check" class="w-4 h-4"></i>
+                </div>
+                <div>
+                    <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Awaiting Admin</span>
+                    <p class="text-lg font-black text-slate-900 leading-none">{{ $stats['pending_admin'] }}</p>
+                </div>
+            </div>
+            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-600">
+                    <i data-lucide="check-circle" class="w-4 h-4"></i>
+                </div>
+                <div>
+                    <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Approved</span>
+                    <p class="text-lg font-black text-slate-900 leading-none">{{ $stats['approved'] }}</p>
+                </div>
+            </div>
+        </div>
+
         <!-- Records Table -->
-        <div class="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
-            <div class="px-8 py-6 border-b border-slate-100 flex items-center justify-between">
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+            <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
                 <h3 class="text-xs font-black text-slate-400 uppercase tracking-widest">Attendance Records</h3>
-                <span class="px-4 py-1.5 bg-slate-100 rounded-full text-[10px] font-black text-slate-500 uppercase">
-                    {{ $records->total() }} Total Records
+                <span class="px-3 py-1 bg-slate-100 rounded-full text-[10px] font-black text-slate-500 uppercase">
+                    {{ $records->total() }} Total
                 </span>
             </div>
             <div class="overflow-x-auto">
                 <table class="w-full text-sm text-left">
                     <thead class="bg-slate-50/30">
                         <tr>
-                            <th class="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                                Department</th>
-                            <th class="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Week
-                                Period</th>
-                            <th class="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                                Submitted By</th>
-                            <th class="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Status
-                            </th>
-                            <th
-                                class="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">
-                                Actions</th>
+                            <th class="px-6 py-3 text-[9px] font-black text-slate-400 uppercase tracking-widest">Department</th>
+                            <th class="px-6 py-3 text-[9px] font-black text-slate-400 uppercase tracking-widest">Week Period</th>
+                            <th class="px-6 py-3 text-[9px] font-black text-slate-400 uppercase tracking-widest">Submitted By</th>
+                            <th class="px-6 py-3 text-[9px] font-black text-slate-400 uppercase tracking-widest">Status</th>
+                            <th class="px-6 py-3 text-[9px] font-black text-slate-400 uppercase tracking-widest text-right">Actions</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-50">
                         @forelse($records as $record)
                             <tr class="hover:bg-slate-50/50 transition-colors group">
-                                <td class="px-8 py-5">
+                                <td class="px-6 py-3">
                                     <div class="flex items-center gap-3">
-                                        <div
-                                            class="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600 font-bold border border-blue-100">
+                                        <div class="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600 font-bold text-xs border border-blue-100">
                                             {{ substr($record->department->name ?? '?', 0, 1) }}
                                         </div>
-                                        <span
-                                            class="font-bold text-slate-800">{{ $record->department->name ?? 'Unknown' }}</span>
+                                        <span class="font-bold text-slate-800 text-sm">{{ $record->department->name ?? 'Unknown' }}</span>
                                     </div>
                                 </td>
-                                <td class="px-8 py-5">
+                                <td class="px-6 py-3">
                                     <div class="flex flex-col">
-                                        <span
-                                            class="font-bold text-slate-700">{{ $record->week_start_date->format('M d, Y') }}</span>
-                                        <span class="text-[10px] text-slate-400 uppercase">Week
-                                            {{ $record->week_start_date->weekOfYear }}</span>
+                                        <span class="font-bold text-slate-700 text-sm">{{ $record->week_start_date->format('M d, Y') }}</span>
+                                        <span class="text-[9px] font-bold text-slate-400 uppercase">Week {{ $record->week_start_date->weekOfYear }}</span>
                                     </div>
                                 </td>
-                                <td class="px-8 py-5">
-                                    <span
-                                        class="text-xs font-bold text-slate-600">{{ $record->submitter->name ?? 'Unknown' }}</span>
+                                <td class="px-6 py-3">
+                                    <span class="text-xs font-bold text-slate-600">{{ $record->submitter->name ?? 'Unknown' }}</span>
                                 </td>
-                                <td class="px-8 py-5">
-                                    <span
-                                        class="px-3 py-1 rounded-lg text-[10px] font-black uppercase ring-1 ring-inset {{ $record->status->color() }}">
+                                <td class="px-6 py-3">
+                                    <span class="px-2.5 py-1 rounded-lg text-[9px] font-black uppercase tracking-wider {{ $record->status->color() }}">
                                         {{ $record->status->label() }}
                                     </span>
                                 </td>
-                                <td class="px-8 py-5 text-right">
-                                    <div class="flex items-center justify-end gap-2">
-                                        <a href="{{ route('attendance.show', $record->id) }}"
-                                            class="inline-flex items-center px-4 py-2 bg-slate-50 rounded-xl text-[10px] font-black text-slate-400 uppercase hover:bg-[#00ADC5] hover:text-white transition-all">
-                                            View Details →
-                                        </a>
-                                        <form action="{{ route('admin.attendance.destroy', $record->id) }}" method="POST"
-                                            onsubmit="return confirm('Are you sure you want to delete this attendance record? This action cannot be undone.');">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit"
-                                                class="inline-flex items-center px-4 py-2 bg-red-50 rounded-xl text-[10px] font-black text-red-500 uppercase hover:bg-red-500 hover:text-white transition-all">
-                                                <i data-lucide="trash-2" class="w-3 h-3 mr-1"></i>
-                                                Delete
-                                            </button>
-                                        </form>
-                                    </div>
+                                <td class="px-6 py-3 text-right">
+                                    <a href="{{ route('attendance.show', $record->id) }}"
+                                        class="inline-flex items-center px-3 py-1.5 bg-slate-50 rounded-lg text-[10px] font-black text-slate-400 uppercase hover:bg-[#00ADC5] hover:text-white transition-all">
+                                        View Details
+                                    </a>
+                                    <form action="{{ route('admin.attendance.destroy', $record->id) }}" method="POST" class="inline-block ml-1" onsubmit="return confirm('Are you sure you want to delete this attendance record? This action cannot be undone.');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit"
+                                            class="inline-flex items-center px-3 py-1.5 bg-red-50 rounded-lg text-[10px] font-black text-red-500 uppercase hover:bg-red-500 hover:text-white transition-all">
+                                            <i data-lucide="trash-2" class="w-3 h-3 mr-1"></i>
+                                            Delete
+                                        </button>
+                                    </form>
                                 </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="5" class="px-8 py-12 text-center">
-                                    <p class="text-slate-400 font-medium italic">No attendance records found.</p>
+                                <td colspan="5" class="px-6 py-10 text-center">
+                                    <p class="text-slate-400 font-medium italic text-sm">No attendance records found.</p>
                                 </td>
                             </tr>
                         @endforelse
@@ -217,8 +177,8 @@
             </div>
 
             @if($records->hasPages())
-                <div class="px-8 py-6 border-t border-slate-100">
-                    {{ $records->links() }}
+                <div class="px-6 py-4 border-t border-slate-100 bg-slate-50/50">
+                    {{ $records->appends(request()->except('page'))->links() }}
                 </div>
             @endif
         </div>

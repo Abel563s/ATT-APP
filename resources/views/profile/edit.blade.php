@@ -1,118 +1,88 @@
 <x-app-layout>
     <div class="py-6 space-y-6">
-        <!-- Modern Header -->
+        <!-- Header -->
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
-                <h2 class="text-3xl font-black text-slate-900 tracking-tight">Security & Identity</h2>
-                <p class="text-slate-500 font-medium">Manage your personal credentials and system access.</p>
+                <h2 class="text-2xl font-black text-slate-900 tracking-tight">Profile Settings</h2>
+                <p class="text-slate-500 text-sm font-medium">Manage your account information and preferences</p>
             </div>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
             <!-- Form Side -->
-            <div class="lg:col-span-8 space-y-8">
+            <div class="lg:col-span-8 space-y-6">
                 <!-- Profile Information -->
-                <div
-                    class="bg-white rounded-[2.5rem] p-10 md:p-12 border border-slate-200 shadow-sm relative overflow-hidden transition-all hover:shadow-xl hover:shadow-slate-200/50">
-                    <div class="max-w-xl relative z-10">
-                        <div class="flex items-center gap-4 mb-10">
-                            <div
-                                class="w-14 h-14 rounded-2xl bg-cyan-50 flex items-center justify-center text-[#00ADC5] border-2 border-white shadow-sm ring-1 ring-cyan-100">
-                                <i data-lucide="user" class="w-7 h-7"></i>
-                            </div>
-                            <div>
-                                <h3 class="text-xl font-black text-slate-900 leading-none">Profile Details</h3>
-                                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1.5">
-                                    Identification Protocol</p>
-                            </div>
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-10 h-10 rounded-xl bg-cyan-50 flex items-center justify-center text-[#00ADC5]">
+                            <i data-lucide="user" class="w-5 h-5"></i>
                         </div>
-                        @include('profile.partials.update-profile-information-form')
+                        <div>
+                            <h3 class="text-sm font-black text-slate-900">Profile Details</h3>
+                            <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Identification Protocol</p>
+                        </div>
                     </div>
+                    @include('profile.partials.update-profile-information-form')
                 </div>
 
                 <!-- Update Password -->
-                <div
-                    class="bg-white rounded-[2.5rem] p-10 md:p-12 border border-slate-200 shadow-sm relative overflow-hidden transition-all hover:shadow-xl hover:shadow-slate-200/50">
-                    <div class="max-w-xl relative z-10">
-                        <div class="flex items-center gap-4 mb-10">
-                            <div
-                                class="w-14 h-14 rounded-2xl bg-amber-50 flex items-center justify-center text-amber-600 border-2 border-white shadow-sm ring-1 ring-amber-100">
-                                <i data-lucide="key-round" class="w-7 h-7"></i>
-                            </div>
-                            <div>
-                                <h3 class="text-xl font-black text-slate-900 leading-none">Access Key</h3>
-                                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1.5">
-                                    Security Credentials</p>
-                            </div>
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center text-amber-600">
+                            <i data-lucide="key-round" class="w-5 h-5"></i>
                         </div>
-                        @include('profile.partials.update-password-form')
+                        <div>
+                            <h3 class="text-sm font-black text-slate-900">Access Key</h3>
+                            <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Security Credentials</p>
+                        </div>
                     </div>
+                    @include('profile.partials.update-password-form')
                 </div>
 
                 <!-- Danger Zone -->
                 @if(Auth::user()->isAdmin() || Auth::user()->isSuperAdmin())
-                    <div
-                        class="bg-rose-50/30 rounded-[2.5rem] p-10 md:p-12 border border-rose-100 shadow-sm relative overflow-hidden group">
-                        <div class="max-w-xl relative z-10">
-                            <div class="flex items-center gap-4 mb-10">
-                                <div
-                                    class="w-14 h-14 rounded-2xl bg-white flex items-center justify-center text-rose-500 border-2 border-rose-50 shadow-sm transition-transform group-hover:scale-105">
-                                    <i data-lucide="shield-alert" class="w-7 h-7"></i>
-                                </div>
-                                <div>
-                                    <h3 class="text-xl font-black text-rose-900 leading-none">Purge Profile</h3>
-                                    <p class="text-[10px] font-black text-rose-400 uppercase tracking-widest mt-1.5">Account
-                                        Termination Terminal</p>
-                                </div>
-                            </div>
-                            @include('profile.partials.delete-user-form')
+                <div class="bg-rose-50/30 rounded-xl shadow-sm border border-rose-100 p-6">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-rose-500 border border-rose-50">
+                            <i data-lucide="shield-alert" class="w-5 h-5"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-sm font-black text-rose-900">Purge Profile</h3>
+                            <p class="text-[9px] font-black text-rose-400 uppercase tracking-widest">Account Termination</p>
                         </div>
                     </div>
+                    @include('profile.partials.delete-user-form')
+                </div>
                 @endif
             </div>
 
             <!-- Meta Side -->
-            <div class="lg:col-span-4 space-y-6">
-                <!-- Info Card -->
-                <div
-                    class="bg-slate-900 rounded-[2.5rem] p-10 text-white relative overflow-hidden shadow-2xl ring-1 ring-white/10">
-                    <div class="relative z-10">
-                        <div class="w-20 h-20 rounded-3xl bg-white/20 p-0.5 mb-8 shadow-xl shadow-cyan-900/10">
-                            <div
-                                class="w-full h-full rounded-[22px] bg-white/10 flex items-center justify-center border-4 border-white/20">
-                                <span
-                                    class="text-3xl font-black text-white italic">{{ substr(Auth::user()->name, 0, 1) }}</span>
-                            </div>
+            <div class="lg:col-span-4">
+                <div class="bg-slate-900 rounded-xl p-6 text-white relative overflow-hidden shadow-xl">
+                    <div class="relative z-10 space-y-5">
+                        <div class="w-16 h-16 rounded-2xl bg-white/10 border border-white/10 flex items-center justify-center text-cyan-400 shadow-lg">
+                            <span class="text-2xl font-black text-white">{{ substr(Auth::user()->name, 0, 1) }}</span>
                         </div>
-                        <h4 class="text-2xl font-black tracking-tight mb-2">{{ Auth::user()->name }}</h4>
-                        <div class="flex items-center gap-2 mb-10">
-                            <span
-                                class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shadow-lg shadow-emerald-400/50"></span>
-                            <p class="text-[10px] font-black text-white/40 uppercase tracking-[0.2em]">Verified Network
-                                Node</p>
+                        <div>
+                            <h4 class="text-lg font-black tracking-tight">{{ Auth::user()->name }}</h4>
+                            <div class="flex items-center gap-2 mt-1">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                                <p class="text-[9px] font-black text-white/40 uppercase tracking-widest">Verified Node</p>
+                            </div>
                         </div>
 
-                        <div class="space-y-6">
-                            <div
-                                class="p-6 bg-white/5 rounded-2xl border border-white/10 hover:bg-white/10 transition-colors">
-                                <span
-                                    class="text-[9px] font-black text-white/30 uppercase tracking-[0.2em] block mb-2">Protocol
-                                    Sync</span>
-                                <span
-                                    class="text-sm font-bold text-white">{{ Auth::user()->updated_at->diffForHumans() }}</span>
+                        <div class="space-y-3 pt-4 border-t border-white/5">
+                            <div class="p-3 bg-white/5 rounded-xl border border-white/5">
+                                <span class="text-[9px] font-black text-white/30 uppercase tracking-widest block mb-1">Last Sync</span>
+                                <span class="text-xs font-bold text-white">{{ Auth::user()->updated_at->diffForHumans() }}</span>
                             </div>
-                            <div
-                                class="p-6 bg-white/5 rounded-2xl border border-white/10 hover:bg-white/10 transition-colors">
-                                <span
-                                    class="text-[9px] font-black text-white/30 uppercase tracking-[0.2em] block mb-2">Node
-                                    Registry</span>
-                                <span class="text-sm font-bold text-white opacity-60">ID#{{ Auth::user()->id }}</span>
+                            <div class="p-3 bg-white/5 rounded-xl border border-white/5">
+                                <span class="text-[9px] font-black text-white/30 uppercase tracking-widest block mb-1">Node ID</span>
+                                <span class="text-xs font-bold text-white/60">#{{ Auth::user()->id }}</span>
                             </div>
                         </div>
                     </div>
-                    <!-- Decor -->
-                    <div class="absolute -right-24 -top-24 w-64 h-64 bg-[#00ADC5]/10 rounded-full blur-3xl"></div>
-                    <div class="absolute -left-24 -bottom-24 w-64 h-64 bg-indigo-500/5 rounded-full blur-3xl"></div>
+                    <div class="absolute -right-16 -top-16 w-48 h-48 bg-[#00ADC5]/10 rounded-full blur-3xl"></div>
                 </div>
             </div>
         </div>
