@@ -6,14 +6,17 @@ use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
-        $this->call([
-            AttendanceSystemSeeder::class,
-            SuperAdminSeeder::class,
-        ]);
+        if (app()->environment('production')) {
+            $this->call([
+                SuperAdminSeeder::class,
+            ]);
+        } else {
+            $this->call([
+                AttendanceSystemSeeder::class,
+                SuperAdminSeeder::class,
+            ]);
+        }
     }
 }
