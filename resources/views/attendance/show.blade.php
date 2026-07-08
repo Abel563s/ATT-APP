@@ -50,13 +50,16 @@
                     @if(Auth::user()->isSuperAdmin())
                         <form action="{{ route('attendance.update-created-at', $attendance->id) }}" method="POST" class="flex items-center gap-2">
                             @csrf
-                            <input type="datetime-local" name="created_at" value="{{ $attendance->created_at->format('Y-m-d\TH:i') }}"
+                            <input type="datetime-local" name="created_at" value="{{ old('created_at', $attendance->created_at->format('Y-m-d\TH:i')) }}"
                                 class="text-sm font-black text-slate-700 bg-white border-2 border-slate-200 rounded-xl px-3 py-1.5 focus:border-[#00ADC5] focus:ring-2 focus:ring-[#00ADC5]/20 outline-none transition-all">
                             <button type="submit"
                                 class="px-3 py-1.5 bg-[#00ADC5] text-white text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-[#007A8A] transition-all active:scale-95">
                                 Save
                             </button>
                         </form>
+                        @if($errors->has('created_at'))
+                            <p class="text-rose-500 text-[10px] font-black mt-1">{{ $errors->first('created_at') }}</p>
+                        @endif
                     @else
                         <span
                             class="text-sm font-black text-slate-700 block">{{ $attendance->updated_at->format('M d, H:i') }}</span>

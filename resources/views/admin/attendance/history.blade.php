@@ -121,10 +121,9 @@
                             Excel
                         </a>
                         <a href="{{ route('admin.attendance.history.export.pdf', request()->all()) }}"
-                            class="px-5 py-2 bg-rose-500 rounded-xl text-xs font-black text-white hover:bg-rose-600 transition-all flex items-center justify-center gap-2 shadow-lg shadow-rose-100 border border-rose-600/10"
+                            class="p-2.5 bg-indigo-500 hover:bg-indigo-600 rounded-xl text-white transition-all flex items-center justify-center shadow-lg shadow-indigo-100"
                             title="Export PDF">
                             <i data-lucide="file-down" class="w-4 h-4"></i>
-                            PDF
                         </a>
                     </div>
                 </div>
@@ -151,8 +150,6 @@
                                 Submitted By</th>
                             <th class="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Status
                             </th>
-                            <th class="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Last
-                                Updated</th>
                             <th
                                 class="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">
                                 Actions</th>
@@ -189,9 +186,6 @@
                                         {{ $record->status->label() }}
                                     </span>
                                 </td>
-                                <td class="px-8 py-5">
-                                    <span class="text-xs text-slate-500">{{ $record->updated_at->diffForHumans() }}</span>
-                                </td>
                                 <td class="px-8 py-5 text-right">
                                     <div class="flex items-center justify-end gap-2">
                                         <a href="{{ route('attendance.show', $record->id) }}"
@@ -213,7 +207,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="6" class="px-8 py-12 text-center">
+                                <td colspan="5" class="px-8 py-12 text-center">
                                     <p class="text-slate-400 font-medium italic">No attendance records found.</p>
                                 </td>
                             </tr>

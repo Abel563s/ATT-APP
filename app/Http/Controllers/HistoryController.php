@@ -117,8 +117,12 @@ class HistoryController extends Controller
             'created_at' => ['required', 'date', 'before_or_equal:now'],
         ]);
 
-        $attendance->created_at = $request->created_at;
-        $attendance->save();
+        try {
+            $attendance->created_at = \Carbon\Carbon::parse($request->created_at);
+            $attendance->save();
+        } catch (\Throwable $e) {
+            return redirect()->back()->with('error', 'Invalid date format.')->withInput();
+        }
 
         return redirect()->back()->with('success', 'Record creation timestamp updated successfully.');
     }
